@@ -1,10 +1,11 @@
-import { Button } from "@/components/ui/button";
-
+import { CarouselPlugin } from "@/components/modules/homepage/Carousel";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <Button>Click me</Button>
+    <div className="">
+      <div className="w-full">
+        <CarouselPlugin/>
+      </div>
     </div>
   );
 }
