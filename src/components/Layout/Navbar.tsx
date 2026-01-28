@@ -68,8 +68,8 @@ const Navbar = ({
       url: "/pricing",
     },
     {
-      title: "Blog",
-      url: "/blog",
+      title: "Dashboard",
+      url: "/dashboard",
     },
   ],
   auth = {
