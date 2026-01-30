@@ -13,27 +13,10 @@ import {
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { roles } from "@/Constant/roles";
-
-// This is sample data.
-const data = {
-  navMain: [
-    {
-      title: "Getting Started",
-      url: "#",
-      items: [
-        {
-          title: "Installation",
-          url: "#",
-        },
-        {
-          title: "Project Structure",
-          url: "#",
-        },
-      ],
-    },
-
-  ],
-};
+import { adminRoutes } from "@/routes/adminRoutes";
+import { studentRoutes } from "@/routes/studentRoutes";
+import { tutorRoutes } from "@/routes/tutorRoutes";
+import { Routes } from "@/types/routes.type";
 
 export function AppSidebar({
   user,
@@ -41,17 +24,22 @@ export function AppSidebar({
 }: {
   user: { role: string } & React.ComponentProps<typeof Sidebar>;
 }) {
+  let routes: Routes[] = [];
 
-  let routes = []
-
-  if(user.role === roles.admin){
-    routes.push()
+  if (user.role === roles.admin) {
+    routes = adminRoutes;
+  } else if (user.role === roles.student) {
+    routes = studentRoutes;
+  } else if (user.role === roles.tutor) {
+    routes = tutorRoutes;
+  } else {
+    routes = [];
   }
   return (
     <Sidebar {...props}>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}
-        {data.navMain.map((item) => (
+        {routes.map((item) => (
           <SidebarGroup key={item.title}>
             <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>
