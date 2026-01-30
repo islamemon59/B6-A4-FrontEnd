@@ -12,10 +12,10 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { roles } from "@/Constant/roles";
 
 // This is sample data.
 const data = {
-  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
   navMain: [
     {
       title: "Getting Started",
@@ -41,6 +41,12 @@ export function AppSidebar({
 }: {
   user: { role: string } & React.ComponentProps<typeof Sidebar>;
 }) {
+
+  let routes = []
+
+  if(user.role === roles.admin){
+    routes.push()
+  }
   return (
     <Sidebar {...props}>
       <SidebarContent>

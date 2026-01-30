@@ -1,0 +1,1 @@
+import type {Routes} from "./routes.type"
