@@ -24,7 +24,11 @@ import {
   PROFILE_STATUS,
 } from "@/types/tutorProfile.type";
 import { tutorServices } from "@/services/tutor.service";
-import { getCategory, getTutorProfile, updateProfile } from "@/actions/tutor.action";
+import {
+  getCategory,
+  getTutorProfile,
+  updateProfile,
+} from "@/actions/tutor.action";
 
 export default function TutorProfileUpdateForm() {
   const [loading, setLoading] = React.useState(true);
@@ -125,12 +129,11 @@ export default function TutorProfileUpdateForm() {
           profileStatus: value.profileStatus,
         };
 
-        const res = await updateProfile(payload)
+        const res = await updateProfile(payload);
         console.log(res);
 
-
         if (!res.success) {
-          toast.error( "Update failed", { id: toastId });
+          toast.error("Update failed", { id: toastId });
           return;
         }
 
