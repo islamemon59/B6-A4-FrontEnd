@@ -1,3 +1,4 @@
+import { FormValues } from "@/types/category.type";
 import { cookies } from "next/headers";
 
 const API_URL = process.env.API_URL;
@@ -42,7 +43,7 @@ export const adminService = {
 
     return await res.json();
   },
-    getSingleTutor: async function (id: string) {
+  getSingleTutor: async function (id: string) {
     const cookieStore = await cookies();
     const res = await fetch(`${API_URL}/api/admin/tutor/${id}`, {
       method: "GET",
@@ -66,6 +67,21 @@ export const adminService = {
       },
       credentials: "include",
       body: JSON.stringify({ status: payload }),
+    });
+
+    return await res.json();
+  },
+
+  createCategory: async function (payload: FormValues) {
+    const cookieStore = await cookies();
+    const res = await fetch(`${API_URL}/api/admin/categories`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      credentials: "include",
+      body: JSON.stringify(payload),
     });
 
     return await res.json();
