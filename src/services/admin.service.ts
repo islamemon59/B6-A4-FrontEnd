@@ -16,6 +16,45 @@ export const adminService = {
 
     return await res.json();
   },
+  getAllBookings: async function () {
+    const cookieStore = await cookies();
+    const res = await fetch(`${API_URL}/api/admin/bookings`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      cache: "no-store",
+    });
+
+    return await res.json();
+  },
+  getSingleCategory: async function (id: string) {
+    const cookieStore = await cookies();
+    const res = await fetch(`${API_URL}/api/admin/categories/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      cache: "no-store",
+    });
+
+    return await res.json();
+  },
+    getSingleTutor: async function (id: string) {
+    const cookieStore = await cookies();
+    const res = await fetch(`${API_URL}/api/admin/tutor/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      cache: "no-store",
+    });
+
+    return await res.json();
+  },
   updateStatus: async function (id: string, payload: string) {
     console.log({ status: payload });
     const cookieStore = await cookies();
@@ -24,7 +63,6 @@ export const adminService = {
       headers: {
         "Content-Type": "application/json",
         Cookie: cookieStore.toString(),
-        
       },
       credentials: "include",
       body: JSON.stringify({ status: payload }),
