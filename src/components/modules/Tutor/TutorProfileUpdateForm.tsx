@@ -17,51 +17,77 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   Category,
+  CreateTutorProfilePayload,
   CURRENCIES,
   FormValues,
   MEETING_MODES,
   PROFILE_STATUS,
 } from "@/types/tutorProfile.type";
-import { createProfile, getCategory } from "@/actions/tutor.action";
+import { tutorServices } from "@/services/tutor.service";
+import { getCategory, getTutorProfile, updateProfile } from "@/actions/tutor.action";
 
-export default function CreateTutorProfileForm() {
+export default function TutorProfileUpdateForm() {
+  const [loading, setLoading] = React.useState(true);
   const [categories, setCategories] = React.useState<Category[]>([]);
-  const [loadingCats, setLoadingCats] = React.useState(true);
+
+  const [initial, setInitial] = React.useState<FormValues>({
+    categoryId: "",
+    headline: "",
+    about: "",
+    subjectsText: "",
+    meetingMode: "ONLINE",
+    hourlyRate: "",
+    currency: "BDT",
+    isFeatured: false,
+    profileStatus: "DRAFT",
+  });
 
   React.useEffect(() => {
     (async () => {
       try {
-        setLoadingCats(true);
-        const json = await getCategory();
-        const list = Array.isArray(json) ? json : (json.data ?? []);
-        setCategories(list);
-      } catch {
-        toast.error("Failed to load categories");
+        setLoading(true);
+        const catJson = await getCategory();
+        const cats: Category[] = Array.isArray(catJson)
+          ? catJson
+          : (catJson?.data ?? []);
+        setCategories(cats);
+
+        const profileJson = await getTutorProfile();
+        if (!profileJson.success) {
+          throw new Error("Failed to load profile");
+        }
+        const p: CreateTutorProfilePayload = profileJson?.data ?? profileJson;
+
+        setInitial({
+          categoryId: p.categoryId,
+          headline: p.headline ?? "",
+          about: p.about ?? "",
+          subjectsText: (p.subjects ?? []).join(", "),
+          meetingMode: p.meetingMode ?? "ONLINE",
+          hourlyRate: p.hourlyRate ?? "",
+          currency: p.currency ?? "BDT",
+          isFeatured: Boolean(p.isFeatured),
+          profileStatus: p.profileStatus ?? "DRAFT",
+        });
+      } catch (e: any) {
+        toast.error(e?.message || "Something went wrong");
       } finally {
-        setLoadingCats(false);
+        setLoading(false);
       }
     })();
   }, []);
 
   const form = useForm({
-    defaultValues: {
-      categoryId: "",
-      headline: "",
-      about: "",
-      subjectsText: "",
-      meetingMode: "ONLINE",
-      hourlyRate: "" as FormValues["hourlyRate"],
-      currency: "BDT",
-      isFeatured: false as FormValues["isFeatured"],
-      profileStatus: "DRAFT",
-    } satisfies FormValues,
+    // ✅ this enables re-init when `initial` changes
+    defaultValues: initial satisfies FormValues,
 
     onSubmit: async ({ value }) => {
-      const toastId = toast.loading("Creating tutor profile...");
+      const toastId = toast.loading("Updating profile...");
 
       try {
+        // basic checks
         if (!value.categoryId) {
-          toast.error("Please select a category", { id: toastId });
+          toast.error("Category is required", { id: toastId });
           return;
         }
         if (!value.headline.trim()) {
@@ -77,15 +103,13 @@ export default function CreateTutorProfileForm() {
           return;
         }
 
-        const subjects: string[] = value.subjectsText
+        const subjects = value.subjectsText
           .split(",")
           .map((s) => s.trim())
           .filter(Boolean);
 
         if (subjects.length === 0) {
-          toast.error("Add at least one subject (comma separated)", {
-            id: toastId,
-          });
+          toast.error("Add at least one subject", { id: toastId });
           return;
         }
 
@@ -101,17 +125,16 @@ export default function CreateTutorProfileForm() {
           profileStatus: value.profileStatus,
         };
 
-        const res = await createProfile(payload);
+        const res = await updateProfile(payload)
+        console.log(res);
+
 
         if (!res.success) {
-          toast.error("Failed to create profile", {
-            id: toastId,
-          });
+          toast.error( "Update failed", { id: toastId });
           return;
         }
 
-        toast.success("Tutor profile created successfully", { id: toastId });
-        // ✅ optional redirect
+        toast.success("Profile updated successfully", { id: toastId });
         window.location.href = "/dashboard/profile";
       } catch {
         toast.error("Something went wrong", { id: toastId });
@@ -119,18 +142,40 @@ export default function CreateTutorProfileForm() {
     },
   });
 
+  // ✅ Important: when initial values change after fetch, reset form
+  React.useEffect(() => {
+    form.reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
+
+  if (loading) {
+    return (
+      <div className="max-w-xl mx-auto p-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Loading...</CardTitle>
+            <CardDescription>Fetching your profile data</CardDescription>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            Please wait.
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <Card className="w-full max-w-xl mx-auto">
       <CardHeader>
-        <CardTitle>Create Tutor Profile</CardTitle>
+        <CardTitle>Update Tutor Profile</CardTitle>
         <CardDescription>
-          Fill in your teaching details. You can edit later.
+          Edit your profile details and save changes
         </CardDescription>
       </CardHeader>
 
       <CardContent>
         <form
-          id="tutorProfileForm"
+          id="tutorUpdateForm"
           onSubmit={(e) => {
             e.preventDefault();
             form.handleSubmit();
@@ -147,12 +192,9 @@ export default function CreateTutorProfileForm() {
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
                     className="h-10 w-full rounded-md border bg-background px-3 text-sm outline-none focus:ring-2"
-                    disabled={loadingCats}
                   >
                     <option value="" disabled>
-                      {loadingCats
-                        ? "Loading categories..."
-                        : "Select a category"}
+                      Select a category
                     </option>
                     {categories.map((cat) => (
                       <option key={cat.id} value={cat.id}>
@@ -171,9 +213,9 @@ export default function CreateTutorProfileForm() {
                   <FieldLabel>Headline</FieldLabel>
                   <Input
                     type="text"
-                    placeholder="e.g. Math Tutor | 5+ years experience"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="e.g. Math Tutor | 5+ years experience"
                   />
                 </Field>
               )}
@@ -187,8 +229,8 @@ export default function CreateTutorProfileForm() {
                   <textarea
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
-                    placeholder="Write about your teaching style, experience, who you teach..."
                     className="min-h-28 w-full rounded-md border bg-background p-3 text-sm outline-none focus:ring-2"
+                    placeholder="Write about your teaching style, experience..."
                   />
                 </Field>
               )}
@@ -201,13 +243,10 @@ export default function CreateTutorProfileForm() {
                   <FieldLabel>Subjects (comma separated)</FieldLabel>
                   <Input
                     type="text"
-                    placeholder="JavaScript, React, Node.js"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
+                    placeholder="JavaScript, React, Node.js"
                   />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Example: Algebra, Calculus, Geometry
-                  </p>
                 </Field>
               )}
             </form.Field>
@@ -240,12 +279,12 @@ export default function CreateTutorProfileForm() {
                   <Input
                     type="number"
                     min={1}
-                    placeholder="e.g. 500"
                     value={field.state.value}
                     onChange={(e) => {
                       const v = e.target.value;
                       field.handleChange(v === "" ? "" : Number(v));
                     }}
+                    placeholder="e.g. 500"
                   />
                 </Field>
               )}
@@ -281,13 +320,13 @@ export default function CreateTutorProfileForm() {
                       checked={field.state.value}
                       onChange={(e) => field.handleChange(e.target.checked)}
                     />
-                    Featured profile (admin only usually)
+                    Featured (usually admin only)
                   </label>
                 </Field>
               )}
             </form.Field>
 
-            {/* Profile Status */}
+            {/* Status */}
             <form.Field name="profileStatus">
               {(field) => (
                 <Field>
@@ -310,9 +349,12 @@ export default function CreateTutorProfileForm() {
         </form>
       </CardContent>
 
-      <CardFooter className="flex gap-3">
-        <Button form="tutorProfileForm" type="submit" className="w-full">
-          Create Profile
+      <CardFooter className="flex gap-3 flex-col">
+        <Button variant="outline" asChild className="w-full">
+          <a href="/tutor/profile">Cancel</a>
+        </Button>
+        <Button form="tutorUpdateForm" type="submit" className="w-full">
+          Save Changes
         </Button>
       </CardFooter>
     </Card>

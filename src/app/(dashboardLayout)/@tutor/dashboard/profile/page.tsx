@@ -9,12 +9,19 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { tutorServices } from "@/services/tutor.service";
+import { userService } from "@/services/user.service";
+import Link from "next/link";
 
 const TutorProfile = async () => {
+  const session = await userService.getSession();
+  const user = session?.data?.user;
+
+  if (!user) {
+    return <p className="text-center mt-10">Unauthorized</p>;
+  }
   const profileRes = await tutorServices.getProfile();
   const profile = profileRes?.data;
 
-  // ❌ profile not created yet
   if (!profile) {
     return (
       <div className="flex flex-col items-center justify-center mt-20 gap-4">
@@ -30,7 +37,6 @@ const TutorProfile = async () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
-      {/* User Info */}
       <Card>
         <CardHeader>
           <CardTitle>{user.name}</CardTitle>
@@ -38,16 +44,13 @@ const TutorProfile = async () => {
         </CardHeader>
       </Card>
 
-      {/* Tutor Profile */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>{profile.headline}</CardTitle>
             <Badge
               variant={
-                profile.profileStatus === "PUBLISHED"
-                  ? "default"
-                  : "secondary"
+                profile.profileStatus === "PUBLISHED" ? "default" : "secondary"
               }
             >
               {profile.profileStatus}
@@ -57,17 +60,13 @@ const TutorProfile = async () => {
         </CardHeader>
 
         <CardContent className="space-y-4">
-          {/* About */}
           <div>
             <h4 className="font-semibold mb-1">About</h4>
-            <p className="text-sm text-muted-foreground">
-              {profile.about}
-            </p>
+            <p className="text-sm text-muted-foreground">{profile.about}</p>
           </div>
 
           <Separator />
 
-          {/* Subjects */}
           <div>
             <h4 className="font-semibold mb-2">Subjects</h4>
             <div className="flex flex-wrap gap-2">
@@ -81,7 +80,6 @@ const TutorProfile = async () => {
 
           <Separator />
 
-          {/* Details */}
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <span className="font-medium">Meeting Mode:</span>{" "}
@@ -92,8 +90,7 @@ const TutorProfile = async () => {
               {profile.hourlyRate} {profile.currency}
             </div>
             <div>
-              <span className="font-medium">Rating:</span>{" "}
-              {profile.ratingCount}
+              <span className="font-medium">Rating:</span> {profile.ratingCount}
             </div>
             <div>
               <span className="font-medium">Featured:</span>{" "}
@@ -103,13 +100,12 @@ const TutorProfile = async () => {
         </CardContent>
       </Card>
 
-      {/* Actions */}
       <div className="flex gap-3">
         <Button asChild variant="outline">
-          <a href="/tutor/profile/edit">Edit Profile</a>
+          <Link href="/dashboard/update-profile">Edit Profile</Link>
         </Button>
         <Button asChild>
-          <a href="/tutor/availability">Manage Availability</a>
+          <Link href="/tutor/availability">Manage Availability</Link>
         </Button>
       </div>
     </div>

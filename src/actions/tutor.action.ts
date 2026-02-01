@@ -10,3 +10,11 @@ export const getCategory = async () => {
 export const createProfile = async (data: CreateTutorProfilePayload) => {
   return await tutorServices.createProfile(data);
 };
+
+export const getTutorProfile = async () => {
+  return await tutorServices.getProfile();
+};
+
+export const updateProfile = async (data: CreateTutorProfilePayload) => {
+  return await tutorServices.updateProfile(data);
+};
