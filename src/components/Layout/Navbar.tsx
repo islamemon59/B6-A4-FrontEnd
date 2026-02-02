@@ -4,9 +4,7 @@ import { Menu } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-import {
-  Accordion,
-} from "@/components/ui/accordion";
+import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -64,8 +62,8 @@ const Navbar = ({
   menu = [
     { title: "Home", url: "/" },
     {
-      title: "Pricing",
-      url: "/pricing",
+      title: "Tutor",
+      url: "/tutor",
     },
     {
       title: "Dashboard",
@@ -106,7 +104,7 @@ const Navbar = ({
             </div>
           </div>
           <div className="flex gap-2">
-            <ModeToggle/>
+            <ModeToggle />
             <Button asChild variant="outline" size="sm">
               <Link href={auth.login.url}>{auth.login.title}</Link>
             </Button>
@@ -159,7 +157,7 @@ const Navbar = ({
                   </Accordion>
 
                   <div className="flex flex-col gap-3">
-                    <ModeToggle/>
+                    <ModeToggle />
                     <Button asChild variant="outline">
                       <Link href={auth.login.url}>{auth.login.title}</Link>
                     </Button>
@@ -178,7 +176,6 @@ const Navbar = ({
 };
 
 const renderMenuItem = (item: MenuItem) => {
-
   return (
     <NavigationMenuItem key={item.title}>
       <Link
@@ -192,13 +189,11 @@ const renderMenuItem = (item: MenuItem) => {
 };
 
 const renderMobileMenuItem = (item: MenuItem) => {
-
   return (
     <Link key={item.title} href={item.url} className="text-md font-semibold">
       {item.title}
     </Link>
   );
 };
-
 
 export { Navbar };

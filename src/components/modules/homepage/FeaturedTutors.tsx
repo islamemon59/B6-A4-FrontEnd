@@ -85,7 +85,7 @@ export default async function FeaturedTutorCard() {
 
             <CardFooter>
               <Button asChild className="w-full">
-                <Link href={`/tutors/${tutor.id}`}>View Profile</Link>
+                <Link href={`/tutor/${tutor.id}`}>View Profile</Link>
               </Button>
             </CardFooter>
           </Card>
