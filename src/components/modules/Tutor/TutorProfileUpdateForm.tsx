@@ -130,7 +130,6 @@ export default function TutorProfileUpdateForm() {
         };
 
         const res = await updateProfile(payload);
-        console.log(res);
 
         if (!res.success) {
           toast.error("Update failed", { id: toastId });

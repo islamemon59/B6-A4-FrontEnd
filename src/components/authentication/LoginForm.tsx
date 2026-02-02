@@ -51,8 +51,6 @@ export function LoginForm() {
           return;
         }
 
-        console.log(data);
-
 
         toast.success("Login successful", { id: toastId });
       } catch {

@@ -35,7 +35,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
       provider: "google",
       callbackURL: "http://localhost:3000",
     });
-    console.log(data);
   };
   const form = useForm({
     defaultValues: {
@@ -52,7 +51,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
 
       try {
         const { data, error } = await authClient.signUp.email(value);
-        console.log(data);
 
         if (data) {
           router.push("/login");

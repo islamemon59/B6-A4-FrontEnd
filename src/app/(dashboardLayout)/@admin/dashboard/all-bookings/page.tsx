@@ -27,7 +27,6 @@ function formatDateTime(iso: string) {
 export default async function AdminBookingsTable() {
   const { data } = await adminService.getAllBookings();
   const bookings = data;
-  console.log(data);
 
   return (
     <div className="space-y-4">
