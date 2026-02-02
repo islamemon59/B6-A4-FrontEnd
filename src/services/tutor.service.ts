@@ -1,3 +1,4 @@
+import { AvailabilityFormValues } from "@/types/availability.type";
 import { CreateTutorProfilePayload } from "@/types/tutorProfile.type";
 import { cookies } from "next/headers";
 
@@ -46,10 +47,25 @@ export const tutorServices = {
 
     return await res.json();
   },
+
   updateProfile: async function (payload: CreateTutorProfilePayload) {
     const cookieStore = await cookies();
     const res = await fetch(`${API_URL}/api/tutor/update-profile`, {
       method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+
+    return await res.json();
+  },
+  setAvailability: async function (payload: AvailabilityFormValues) {
+    const cookieStore = await cookies();
+    const res = await fetch(`${API_URL}/api/tutor/create-slot`, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Cookie: cookieStore.toString(),

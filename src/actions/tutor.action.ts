@@ -1,6 +1,7 @@
 "use server";
 
 import { tutorServices } from "@/services/tutor.service";
+import { AvailabilityFormValues } from "@/types/availability.type";
 import { CreateTutorProfilePayload } from "@/types/tutorProfile.type";
 
 export const getCategory = async () => {
@@ -17,4 +18,8 @@ export const getTutorProfile = async () => {
 
 export const updateProfile = async (data: CreateTutorProfilePayload) => {
   return await tutorServices.updateProfile(data);
+};
+
+export const setAvailability = async (data: AvailabilityFormValues) => {
+  return await tutorServices.setAvailability(data);
 };
