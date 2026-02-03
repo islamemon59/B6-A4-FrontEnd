@@ -12,9 +12,6 @@ import { publicService } from "@/services/public.service";
 export default async function FeaturedTutorCard() {
   const { data } = await publicService.getFeaturedTutor();
 
-  console.log(data);
-
-  // ✅ handle single OR array
   const tutors = Array.isArray(data) ? data : [data];
   if (!tutors.length) return null;
 
@@ -28,8 +25,21 @@ export default async function FeaturedTutorCard() {
 
         const subjects = Array.isArray(tutor.subjects) ? tutor.subjects : [];
         const shownSubjects = subjects.slice(0, 3);
-        console.log(shownSubjects);
+
         const remaining = subjects.length - shownSubjects.length;
+
+        if (!tutors || tutors.length === 0) {
+          return (
+            <div className="text-center py-12">
+              <p className="text-xl font-semibold">
+                No Featured Tutors Found 🎓
+              </p>
+              <p className="text-gray-500 mt-2">
+                We’re working on adding more amazing tutors. Stay tuned!
+              </p>
+            </div>
+          );
+        }
 
         return (
           <Card

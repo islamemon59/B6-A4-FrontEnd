@@ -48,7 +48,6 @@ export default async function SingleTutorPage({ params }: PageProps) {
   const { id } = await params;
 
   const res = await publicService.getSingleTutor(id);
-  console.log(res);
   const tutor = res?.data;
 
   if (!tutor) {
@@ -212,6 +211,45 @@ export default async function SingleTutorPage({ params }: PageProps) {
           </div>
         </CardContent>
       </Card>
+
+      <Separator className="my-6" />
+
+      {/* Reviews */}
+      <div className="space-y-3">
+        <h2 className="text-base font-semibold">Reviews</h2>
+
+        {tutor.reviews?.length ? (
+          <div className="space-y-3">
+            {tutor.reviews.map((review: any) => (
+              <div key={review.id} className="rounded-md border p-4 space-y-2">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium">
+                      ⭐ {review.rating} / 5
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {formatDate(review.createdAt)}
+                    </p>
+                  </div>
+
+                  {/* Optional: if you include student */}
+                  {review.student?.name ? (
+                    <Badge variant="outline">{review.student.name}</Badge>
+                  ) : null}
+                </div>
+
+                <p className="text-sm text-muted-foreground whitespace-pre-line">
+                  {review.comment || "No comment provided."}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            No reviews yet. Be the first to review after booking a session.
+          </p>
+        )}
+      </div>
     </div>
   );
 }

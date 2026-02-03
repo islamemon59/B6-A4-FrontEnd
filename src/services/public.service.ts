@@ -19,15 +19,26 @@ export const publicService = {
   },
 
   getFeaturedTutor: async function () {
+    const cookieStore = await cookies();
     const res = await fetch(`${API_URL}/api/public/featured-tutor`, {
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
       cache: "no-store",
+      credentials: "include",
     });
 
     return await res.json();
   },
 
   getSingleTutor: async function (id: string) {
+    const cookieStore = await cookies();
     const res = await fetch(`${API_URL}/api/public/tutor/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
       cache: "no-store",
     });
 
