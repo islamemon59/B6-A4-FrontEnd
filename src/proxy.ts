@@ -25,15 +25,15 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (isAdmin && pathName.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-  if (isStudent && pathName.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-  if (isTutor && pathName.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
+//   if (isAdmin && pathName.startsWith("/dashboard")) {
+//     return NextResponse.redirect(new URL("/dashboard", request.url));
+//   }
+//   if (isStudent && pathName.startsWith("/dashboard")) {
+//     return NextResponse.redirect(new URL("/dashboard", request.url));
+//   }
+//   if (isTutor && pathName.startsWith("/dashboard")) {
+//     return NextResponse.redirect(new URL("/dashboard", request.url));
+//   }
 }
 
 export const config = {

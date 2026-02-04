@@ -49,7 +49,6 @@ export const studentServices = {
     });
 
     const data = await res.json();
-    console.log(data);
     if (!res.ok || data?.success === false) {
       throw new Error(data?.message || "Booking failed");
     }

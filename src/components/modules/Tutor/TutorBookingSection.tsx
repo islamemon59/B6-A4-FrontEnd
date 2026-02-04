@@ -84,8 +84,6 @@ export default function TutorBookingSection({
         subject,
       });
 
-      console.log(data);
-
       setSlots((prev) =>
         prev.map((s) =>
           s.id === selectedSlot.id ? { ...s, isBooked: true } : s,

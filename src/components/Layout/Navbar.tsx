@@ -23,6 +23,8 @@ import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
 import { getUser } from "@/actions/user.action";
 import { useEffect, useState } from "react";
+import LogoutButton from "../authentication/LogoutButton";
+import { UserProfile } from "../authentication/UserProfile";
 
 interface MenuItem {
   title: string;
@@ -78,15 +80,17 @@ const Navbar = ({
   },
   className,
 }: Navbar1Props) => {
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState<any>(null);
+
   useEffect(() => {
-    async () => {
-      const { data } = await getUser();
-      console.log(data);
-      setUser(data)
-    };
-  },[]);
+    (async () => {
+      const res = await getUser(); // must return { success, data }
+      setUser(res?.data.user || null);
+    })();
+  }, []);
+
   console.log(user);
+
   return (
     <section className={cn("py-4", className)}>
       <div className="container mx-auto">
@@ -116,12 +120,22 @@ const Navbar = ({
           </div>
           <div className="flex gap-2">
             <ModeToggle />
-            <Button asChild variant="outline" size="sm">
-              <Link href={auth.login.url}>{auth.login.title}</Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link href={auth.signup.url}>{auth.signup.title}</Link>
-            </Button>
+            {user ? (
+              <div className="flex justify-center items-center gap-2">
+                <UserProfile />
+                <LogoutButton />
+              </div>
+            ) : (
+              <>
+                {" "}
+                <Button asChild variant="outline" size="sm">
+                  <Link href={auth.login.url}>{auth.login.title}</Link>
+                </Button>
+                <Button asChild size="sm">
+                  <Link href={auth.signup.url}>{auth.signup.title}</Link>
+                </Button>
+              </>
+            )}
           </div>
         </nav>
 
@@ -169,12 +183,24 @@ const Navbar = ({
 
                   <div className="flex flex-col gap-3">
                     <ModeToggle />
-                    <Button asChild variant="outline">
-                      <Link href={auth.login.url}>{auth.login.title}</Link>
-                    </Button>
-                    <Button asChild>
-                      <Link href={auth.signup.url}>{auth.signup.title}</Link>
-                    </Button>
+                    {user ? (
+                      <div className="flex justify-center items-center gap-2">
+                        <UserProfile />
+                        <LogoutButton />
+                      </div>
+                    ) : (
+                      <>
+                        {" "}
+                        <Button asChild variant="outline" size="sm">
+                          <Link href={auth.login.url}>{auth.login.title}</Link>
+                        </Button>
+                        <Button asChild size="sm">
+                          <Link href={auth.signup.url}>
+                            {auth.signup.title}
+                          </Link>
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </SheetContent>
