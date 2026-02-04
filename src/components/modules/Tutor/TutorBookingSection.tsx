@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,7 +21,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createBooking } from "@/actions/student.action";
-
 
 type Slot = {
   id: string;
@@ -49,34 +49,83 @@ function formatDateTime(iso: string) {
   });
 }
 
-export default function TutorBookingSection({ tutor }: { tutor: TutorProfile }) {
+export default function TutorBookingSection({
+  tutor,
+}: {
+  tutor: TutorProfile;
+}) {
   const [open, setOpen] = React.useState(false);
   const [selectedSlot, setSelectedSlot] = React.useState<Slot | null>(null);
-  const [subject, setSubject] = React.useState<string>(tutor.subjects?.[0] || "");
+  const [subject, setSubject] = React.useState<string>(
+    tutor.subjects?.[0] || "",
+  );
   const [loading, setLoading] = React.useState(false);
 
-  const availableSlots = tutor.availabilitySlots?.filter((s) => !s.isBooked) || [];
+  const [slots, setSlots] = React.useState<Slot[]>(
+    tutor.availabilitySlots || [],
+  );
+
+  React.useEffect(() => {
+    setSlots(tutor.availabilitySlots || []);
+  }, [tutor.availabilitySlots]);
+
+  const availableSlots = slots.filter((s) => !s.isBooked);
 
   async function handleConfirmBooking() {
     if (!selectedSlot) return;
 
     setLoading(true);
+    const tId = toast.loading("Booking your slot...");
+
     try {
-      await createBooking({
+      const data = await createBooking({
         tutorProfileId: tutor.id,
         availabilitySlotId: selectedSlot.id,
         subject,
       });
 
-      // Close modal
-      setOpen(false);
+      console.log(data);
 
-      // UI update approach:
-      // 1) Ideally: re-fetch tutor data / slots via TanStack Query invalidate
-      // 2) Simple local fallback: mark selected as booked
-      selectedSlot.isBooked = true;
+      setSlots((prev) =>
+        prev.map((s) =>
+          s.id === selectedSlot.id ? { ...s, isBooked: true } : s,
+        ),
+      );
+
+      toast.success("Booking confirmed!", {
+        id: tId,
+        description: `Subject: ${subject} • ${formatDateTime(selectedSlot.startTime)}`,
+      });
+
+      setOpen(false);
+      setSelectedSlot(null);
     } catch (e: any) {
-      alert(e?.message || "Booking failed");
+      const msg = e?.message?.toLowerCase?.() || "";
+
+      if (msg.includes("already booked") || msg.includes("slot")) {
+        toast.warning("Slot not available", {
+          id: tId,
+          description:
+            "Someone already booked this slot. Please pick another one.",
+        });
+
+       
+        setSlots((prev) =>
+          prev.map((s) =>
+            s.id === selectedSlot.id ? { ...s, isBooked: true } : s,
+          ),
+        );
+
+        setOpen(false);
+        setSelectedSlot(null);
+        return;
+      }
+
+  
+      toast.error("Booking failed", {
+        id: tId,
+        description: e?.message || "Please try again.",
+      });
     } finally {
       setLoading(false);
     }
@@ -137,6 +186,7 @@ export default function TutorBookingSection({ tutor }: { tutor: TutorProfile }) 
                       <Button
                         className="mt-3 w-full rounded-xl"
                         onClick={() => setSelectedSlot(slot)}
+                        disabled={loading}
                       >
                         Book this slot
                       </Button>
@@ -149,13 +199,17 @@ export default function TutorBookingSection({ tutor }: { tutor: TutorProfile }) 
 
                       <div className="space-y-2 text-sm">
                         <p>
-                          <span className="text-muted-foreground">Subject:</span>{" "}
+                          <span className="text-muted-foreground">
+                            Subject:
+                          </span>{" "}
                           <span className="font-medium">{subject}</span>
                         </p>
                         <p>
                           <span className="text-muted-foreground">Time:</span>{" "}
                           <span className="font-medium">
-                            {selectedSlot ? formatDateTime(selectedSlot.startTime) : "-"}
+                            {selectedSlot
+                              ? formatDateTime(selectedSlot.startTime)
+                              : "-"}
                           </span>
                         </p>
                         <p>

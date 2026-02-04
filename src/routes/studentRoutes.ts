@@ -10,7 +10,7 @@ export const studentRoutes: Routes[] = [
       },
       {
         title: "My Bookings",
-        url: "/dashboard/history",
+        url: "/dashboard/my-bookings",
       },
       {
         title: "Profile",

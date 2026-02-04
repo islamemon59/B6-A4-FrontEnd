@@ -19,3 +19,19 @@ export const createBooking = async (payload: {
 }) => {
   return await studentServices.createBooking(payload);
 };
+
+export const getMyBookings = async () => {
+  return await studentServices.getMyBookings();
+};
+
+export const cancelBooking = async (id: string, reason: string) => {
+  return await studentServices.cancelBooking(id, reason);
+};
+
+export const createReview = async (payload: {
+    bookingId: string;
+    rating: number;
+    comment?: string;
+  }) => {
+    return await studentServices.createReview(payload)
+  }
