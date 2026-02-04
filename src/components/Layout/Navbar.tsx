@@ -21,6 +21,8 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
+import { getUser } from "@/actions/user.action";
+import { useEffect, useState } from "react";
 
 interface MenuItem {
   title: string;
@@ -76,6 +78,15 @@ const Navbar = ({
   },
   className,
 }: Navbar1Props) => {
+  const [user, setUser] = useState({})
+  useEffect(() => {
+    async () => {
+      const { data } = await getUser();
+      console.log(data);
+      setUser(data)
+    };
+  },[]);
+  console.log(user);
   return (
     <section className={cn("py-4", className)}>
       <div className="container mx-auto">
