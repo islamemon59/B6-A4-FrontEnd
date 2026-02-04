@@ -1,12 +1,17 @@
-import React from 'react';
-import { Button } from '../ui/button';
+"use client";
+
+import { authClient } from "@/lib/auth-client";
+import { Button } from "../ui/button";
 
 const LogoutButton = () => {
-    return (
-        <div>
-            <Button>Logout</Button>
-        </div>
-    );
+  const handleLogout = async () => {
+    await authClient.signOut();
+  };
+  return (
+    <div>
+      <Button onClick={() => handleLogout()}>Logout</Button>
+    </div>
+  );
 };
 
 export default LogoutButton;

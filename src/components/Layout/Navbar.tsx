@@ -25,6 +25,7 @@ import { getUser } from "@/actions/user.action";
 import { useEffect, useState } from "react";
 import LogoutButton from "../authentication/LogoutButton";
 import { UserProfile } from "../authentication/UserProfile";
+import { roles } from "@/Constant/roles";
 
 interface MenuItem {
   title: string;
@@ -89,7 +90,22 @@ const Navbar = ({
     })();
   }, []);
 
-  console.log(user);
+const filteredMenu = menu.filter((item) => {
+  if (item.url === "/dashboard") {
+    // not logged in → hide
+    if (!user) return false;
+
+    // logged in but invalid role → hide
+    if (
+      ![roles.admin, roles.student, roles.tutor].includes(user.role)
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+});
+
 
   return (
     <section className={cn("py-4", className)}>
@@ -113,7 +129,7 @@ const Navbar = ({
             <div className="flex items-center">
               <NavigationMenu>
                 <NavigationMenuList>
-                  {menu.map((item) => renderMenuItem(item))}
+                  {filteredMenu.map((item) => renderMenuItem(item))}
                 </NavigationMenuList>
               </NavigationMenu>
             </div>

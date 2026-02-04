@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import * as z from "zod";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -27,6 +28,7 @@ const loginSchema = z.object({
 });
 
 export function LoginForm() {
+  const router = useRouter()
   const form = useForm({
     defaultValues: {
       email: "",
@@ -45,6 +47,8 @@ export function LoginForm() {
           email,
           password,
         });
+
+        router.push("/")
 
         if (error) {
           toast.error(error.message, { id: toastId });

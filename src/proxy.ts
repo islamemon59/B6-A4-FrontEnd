@@ -4,17 +4,16 @@ import { userService } from "./services/user.service";
 import { roles } from "./Constant/roles";
 
 export async function proxy(request: NextRequest) {
-  NextResponse.next();
+  const pathName = request.nextUrl.pathname;
 
   let isAuthenticated = false;
   let isAdmin = false;
   let isStudent = false;
   let isTutor = false;
 
-  const pathName = request.nextUrl.pathname;
   const { data } = await userService.getSession();
 
-  if (data) {
+  if (data?.user) {
     isAuthenticated = true;
     isAdmin = data.user.role === roles.admin;
     isStudent = data.user.role === roles.student;
@@ -24,16 +23,11 @@ export async function proxy(request: NextRequest) {
   if (!isAuthenticated) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
+  if (data.user.role === "USER") {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
 
-//   if (isAdmin && pathName.startsWith("/dashboard")) {
-//     return NextResponse.redirect(new URL("/dashboard", request.url));
-//   }
-//   if (isStudent && pathName.startsWith("/dashboard")) {
-//     return NextResponse.redirect(new URL("/dashboard", request.url));
-//   }
-//   if (isTutor && pathName.startsWith("/dashboard")) {
-//     return NextResponse.redirect(new URL("/dashboard", request.url));
-//   }
+  return NextResponse.next();
 }
 
 export const config = {

@@ -1,15 +1,27 @@
+"use client"
+import { getUser } from "@/actions/user.action";
 import {
   Avatar,
   AvatarBadge,
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar"
+import { useEffect, useState } from "react";
 
 export function UserProfile() {
+  const [user, setUser] = useState<any>(null);
+  console.log(user);
+
+  useEffect(() => {
+    (async () => {
+      const res = await getUser(); // must return { success, data }
+      setUser(res?.data.user || null);
+    })();
+  }, []);
   return (
     <Avatar>
-      <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-      <AvatarFallback>CN</AvatarFallback>
+      <AvatarImage src={user?.image} alt="@shadcn" />
+      <AvatarFallback>{user?.name[0]}</AvatarFallback>
       <AvatarBadge className="bg-green-600 dark:bg-green-800" />
     </Avatar>
   )
