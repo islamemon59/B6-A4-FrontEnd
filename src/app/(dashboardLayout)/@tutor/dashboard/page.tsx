@@ -1,11 +1,8 @@
+import { redirect } from 'next/navigation';
 import React from 'react';
 
 const DashboardPage = () => {
-    return (
-        <div>
-            This is tutor dashboard
-        </div>
-    );
+    redirect("/dashboard/create-profile")
 };
 
 export default DashboardPage;

@@ -1,7 +1,7 @@
-import React from "react";
+import { redirect } from "next/navigation";
 
 const AdminDashboard = () => {
-  return <div>This is Admin Dashboard</div>;
+  redirect("/dashboard/all-bookings")
 };
 
 export default AdminDashboard;

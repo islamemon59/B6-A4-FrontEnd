@@ -1,11 +1,10 @@
-import React from 'react';
+import { redirect } from "next/navigation";
+import { NextRequest, NextResponse } from "next/server";
 
-const DashboardPage = () => {
-    return (
-        <div>
-            This is student dashboard
-        </div>
-    );
+
+const StudentDashboard = () => {
+    
+     redirect("/dashboard/create-bookings")
 };
 
-export default DashboardPage;
+export default StudentDashboard;
