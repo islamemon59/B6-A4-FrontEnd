@@ -6,6 +6,7 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { publicService } from "@/services/public.service";
 
@@ -44,53 +45,65 @@ export default async function FeaturedTutorCard() {
         return (
           <Card
             key={tutor.id}
-            className="relative overflow-hidden transition hover:shadow-lg"
+            className="flex h-full flex-col relative overflow-hidden transition hover:shadow-lg"
           >
+            {/* Featured Badge */}
             <Badge className="absolute right-3 top-3 z-10">⭐ Featured</Badge>
 
             <CardHeader className="space-y-2">
-              <h3 className="text-lg font-semibold line-clamp-2 mt-3">
+              {/* Headline */}
+              <CardTitle className="text-base md:text-lg leading-snug line-clamp-2 mt-3 pr-12">
                 {tutor.headline}
-              </h3>
+              </CardTitle>
 
+              {/* Meta badges */}
               <div className="flex flex-wrap gap-2">
-                {tutor.category?.name && (
+                {tutor.category?.name ? (
                   <Badge variant="outline">{tutor.category.name}</Badge>
-                )}
+                ) : null}
                 <Badge variant="secondary">{tutor.meetingMode}</Badge>
               </div>
             </CardHeader>
 
-            <CardContent className="space-y-4">
+            <CardContent className="flex-1 space-y-4">
+              {/* About */}
               <p className="text-sm text-muted-foreground line-clamp-3">
                 {tutor.about}
               </p>
 
+              {/* Subjects */}
               <div className="flex flex-wrap gap-2">
                 {shownSubjects.map((s: string) => (
-                  <Badge key={s} variant="outline">
+                  <Badge key={s} variant="outline" className="font-normal">
                     {s}
                   </Badge>
                 ))}
-                {remaining > 0 && <Badge variant="outline">+{remaining}</Badge>}
+                {remaining > 0 ? (
+                  <Badge variant="outline" className="font-normal">
+                    +{remaining}
+                  </Badge>
+                ) : null}
               </div>
 
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-medium">
-                  {tutor.hourlyRate} {tutor.currency}/hr
-                </span>
-                <span>
+              {/* Rate + Rating */}
+              <div className="flex items-center justify-between pt-2 text-sm">
+                <p className="font-semibold">
+                  {tutor.hourlyRate} {tutor.currency}
+                  <span className="text-muted-foreground font-normal">/hr</span>
+                </p>
+
+                <p className="font-medium">
                   ⭐ {rating}
                   <span className="text-muted-foreground">
                     {" "}
                     ({tutor.ratingCount})
                   </span>
-                </span>
+                </p>
               </div>
             </CardContent>
 
             <CardFooter className="mt-auto">
-              <Button asChild className="w-full">
+              <Button asChild className="w-full rounded-xl">
                 <Link href={`/tutor/${tutor.id}`}>View Profile</Link>
               </Button>
             </CardFooter>
