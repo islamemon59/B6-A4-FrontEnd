@@ -21,6 +21,7 @@ import * as z from "zod";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/Provider/AuthProvider";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -28,7 +29,9 @@ const loginSchema = z.object({
 });
 
 export function LoginForm() {
-  const router = useRouter()
+  const router = useRouter();
+  const { refreshUser } = useAuth();
+
   const form = useForm({
     defaultValues: {
       email: "",
@@ -43,18 +46,17 @@ export function LoginForm() {
       try {
         const { email, password } = value;
 
-        const {data, error} = await authClient.signIn.email({
+        const { data, error } = await authClient.signIn.email({
           email,
           password,
         });
-
-        router.push("/")
+        await refreshUser();
+        router.push("/");
 
         if (error) {
           toast.error(error.message, { id: toastId });
           return;
         }
-
 
         toast.success("Login successful", { id: toastId });
       } catch {

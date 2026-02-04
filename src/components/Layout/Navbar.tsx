@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import LogoutButton from "../authentication/LogoutButton";
 import { UserProfile } from "../authentication/UserProfile";
 import { roles } from "@/Constant/roles";
+import { useAuth } from "@/Provider/AuthProvider";
 
 interface MenuItem {
   title: string;
@@ -81,14 +82,8 @@ const Navbar = ({
   },
   className,
 }: Navbar1Props) => {
-  const [user, setUser] = useState<any>(null);
+const { user } = useAuth();
 
-  useEffect(() => {
-    (async () => {
-      const res = await getUser(); // must return { success, data }
-      setUser(res?.data.user || null);
-    })();
-  }, []);
 
 const filteredMenu = menu.filter((item) => {
   if (item.url === "/dashboard") {
