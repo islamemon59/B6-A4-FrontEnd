@@ -131,4 +131,19 @@ export const tutorServices = {
       throw new Error(data?.message || "Failed to cancel session");
     return data;
   },
+
+  getTutorReviews: async function () {
+    const cookieStore = await cookies();
+    const res = await fetch(`${API_URL}/api/tutor/reviews`, {
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      cache: "no-store",
+    });
+    const data = await res.json();
+    if (!res.ok || data?.success === false)
+      throw new Error(data?.message || "Failed to load reviews");
+    return data;
+  },
 };
