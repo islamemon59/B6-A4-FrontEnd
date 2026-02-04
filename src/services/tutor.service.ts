@@ -76,4 +76,59 @@ export const tutorServices = {
 
     return await res.json();
   },
+
+  getTutorSessions: async function () {
+    const cookieStore = await cookies();
+    const res = await fetch(`${API_URL}/api/tutor/sessions`, {
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      cache: "no-store",
+    });
+
+    const data = await res.json();
+    if (!res.ok || data?.success === false)
+      throw new Error(data?.message || "Failed to load sessions");
+    return data;
+  },
+
+  completeTutorSession: async function (bookingId: string) {
+    const cookieStore = await cookies();
+    const res = await fetch(
+      `${API_URL}/api/tutor/sessions/complete/${bookingId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        cache: "no-store",
+      },
+    );
+    const data = await res.json();
+    if (!res.ok || data?.success === false)
+      throw new Error(data?.message || "Failed to complete session");
+    return data;
+  },
+
+  cancelTutorSession: async function (bookingId: string, reason?: string) {
+    const cookieStore = await cookies();
+    const res = await fetch(
+      `${API_URL}/api/tutor/sessions/cancel/${bookingId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: cookieStore.toString(),
+        },
+        cache: "no-store",
+        body: JSON.stringify({ reason }),
+      },
+    );
+    const data = await res.json();
+    if (!res.ok || data?.success === false)
+      throw new Error(data?.message || "Failed to cancel session");
+    return data;
+  },
 };
