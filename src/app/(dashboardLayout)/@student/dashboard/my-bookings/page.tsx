@@ -149,9 +149,6 @@ export default function MyBookingsPage() {
             </div>
 
             <div className="flex flex-wrap gap-2">
-              <Button variant="outline" className="rounded-xl">
-                View details
-              </Button>
 
               <Button
                 variant="destructive"

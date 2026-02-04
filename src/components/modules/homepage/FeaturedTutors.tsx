@@ -46,11 +46,10 @@ export default async function FeaturedTutorCard() {
             key={tutor.id}
             className="relative overflow-hidden transition hover:shadow-lg"
           >
-            {/* Featured badge */}
             <Badge className="absolute right-3 top-3 z-10">⭐ Featured</Badge>
 
             <CardHeader className="space-y-2">
-              <h3 className="text-lg font-semibold line-clamp-2">
+              <h3 className="text-lg font-semibold line-clamp-2 mt-3">
                 {tutor.headline}
               </h3>
 
@@ -63,12 +62,10 @@ export default async function FeaturedTutorCard() {
             </CardHeader>
 
             <CardContent className="space-y-4">
-              {/* About */}
               <p className="text-sm text-muted-foreground line-clamp-3">
                 {tutor.about}
               </p>
 
-              {/* Subjects */}
               <div className="flex flex-wrap gap-2">
                 {shownSubjects.map((s: string) => (
                   <Badge key={s} variant="outline">
@@ -78,7 +75,6 @@ export default async function FeaturedTutorCard() {
                 {remaining > 0 && <Badge variant="outline">+{remaining}</Badge>}
               </div>
 
-              {/* Price & Rating */}
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium">
                   {tutor.hourlyRate} {tutor.currency}/hr
@@ -93,7 +89,7 @@ export default async function FeaturedTutorCard() {
               </div>
             </CardContent>
 
-            <CardFooter>
+            <CardFooter className="mt-auto">
               <Button asChild className="w-full">
                 <Link href={`/tutor/${tutor.id}`}>View Profile</Link>
               </Button>

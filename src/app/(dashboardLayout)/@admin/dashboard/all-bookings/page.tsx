@@ -10,8 +10,6 @@ import {
 import { adminService } from "@/services/admin.service";
 import { Booking } from "@/types/bookings.type";
 
-const API_BASE = "http://localhost:5000";
-
 function statusBadgeVariant(status: Booking["status"]) {
   if (status === "CANCELLED") return "destructive";
   if (status === "COMPLETED") return "secondary";

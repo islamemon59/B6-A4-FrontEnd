@@ -67,7 +67,6 @@ export default async function SingleTutorPage({ params }: PageProps) {
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
-      {/* Header */}
       <Card className="overflow-hidden">
         <CardHeader className="space-y-3">
           <div className="flex items-start justify-between gap-4">
@@ -105,7 +104,6 @@ export default async function SingleTutorPage({ params }: PageProps) {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* About */}
           <div className="space-y-2">
             <h2 className="text-base font-semibold">About</h2>
             <p className="text-sm text-muted-foreground whitespace-pre-line">
@@ -115,7 +113,6 @@ export default async function SingleTutorPage({ params }: PageProps) {
 
           <Separator />
 
-          {/* Subjects */}
           <div className="space-y-2">
             <h2 className="text-base font-semibold">Subjects</h2>
             {subjects.length ? (
@@ -135,7 +132,6 @@ export default async function SingleTutorPage({ params }: PageProps) {
 
           <Separator />
 
-          {/* Meta info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="rounded-md border p-4 space-y-2">
               <h3 className="font-semibold">Tutor Info</h3>
@@ -172,7 +168,6 @@ export default async function SingleTutorPage({ params }: PageProps) {
         </CardContent>
       </Card>
 
-      {/* Next Step area (optional placeholder) */}
       <Card>
         <CardContent>
           {/* Availability Slots */}
@@ -214,7 +209,6 @@ export default async function SingleTutorPage({ params }: PageProps) {
 
       <Separator className="my-6" />
 
-      {/* Reviews */}
       <div className="space-y-3">
         <h2 className="text-base font-semibold">Reviews</h2>
 
@@ -232,7 +226,6 @@ export default async function SingleTutorPage({ params }: PageProps) {
                     </p>
                   </div>
 
-                  {/* Optional: if you include student */}
                   {review.student?.name ? (
                     <Badge variant="outline">{review.student.name}</Badge>
                   ) : null}

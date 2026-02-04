@@ -104,9 +104,6 @@ const TutorProfile = async () => {
         <Button asChild variant="outline">
           <Link href="/dashboard/update-profile">Edit Profile</Link>
         </Button>
-        <Button asChild>
-          <Link href="/tutor/availability">Manage Availability</Link>
-        </Button>
       </div>
     </div>
   );

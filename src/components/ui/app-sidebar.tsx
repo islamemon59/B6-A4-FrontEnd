@@ -38,6 +38,9 @@ export function AppSidebar({
   return (
     <Sidebar {...props}>
       <SidebarContent>
+        <div className="flex justify-center">
+          <Link href={"/"} className="text-2xl text-center font-bold mt-2">SkillBridge</Link>
+        </div>
         {/* We create a SidebarGroup for each parent. */}
         {routes.map((item) => (
           <SidebarGroup key={item.title}>

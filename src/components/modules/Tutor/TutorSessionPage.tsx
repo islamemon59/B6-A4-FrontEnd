@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cancelTutorSession, completeTutorSession, getTutorSessions } from "@/actions/tutor.action";
-import Link from "next/link";
 
 type Session = {
   id: string;

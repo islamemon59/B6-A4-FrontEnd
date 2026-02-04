@@ -4,7 +4,7 @@ import React from 'react';
 
 const CommonLayout = ({children}: {children: React.ReactNode}) => {
     return (
-        <div>
+        <div className='h-screen'>
             <Navbar/>
             <div className='h-[calc(100vh-70px)]'>
                 {children}

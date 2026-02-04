@@ -87,7 +87,6 @@ export default async function ProfilePage() {
           {user.image ? (
             <div className="rounded-md border p-4 space-y-2">
               <p className="text-sm font-medium">Profile Image</p>
-              {/* If you're using next/image you can replace this img */}
               <img
                 src={user?.image}
                 alt="Profile"

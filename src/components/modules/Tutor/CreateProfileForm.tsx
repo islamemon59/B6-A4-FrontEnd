@@ -111,7 +111,6 @@ export default function CreateTutorProfileForm() {
         }
 
         toast.success("Tutor profile created successfully", { id: toastId });
-        // ✅ optional redirect
         window.location.href = "/dashboard/profile";
       } catch {
         toast.error("Something went wrong", { id: toastId });

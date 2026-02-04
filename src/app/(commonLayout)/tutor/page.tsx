@@ -26,12 +26,11 @@ export default async function TutorsPage({
   };
 
   const result = await publicService.getAllTutor(query);
-  
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
       <TutorsClientFilters />
-       <TutorsGrid tutors={result?.data || []} />
+      <TutorsGrid tutors={result?.data || []} />
     </div>
   );
 }

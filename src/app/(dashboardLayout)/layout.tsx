@@ -38,7 +38,6 @@ const DashboardLayout = async ({
             : userInfo.role === roles.student
               ? student
               : tutor}
-          {/* {admin} {user} */}
         </div>
       </SidebarInset>
     </SidebarProvider>

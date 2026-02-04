@@ -23,7 +23,6 @@ import {
   MEETING_MODES,
   PROFILE_STATUS,
 } from "@/types/tutorProfile.type";
-import { tutorServices } from "@/services/tutor.service";
 import {
   getCategory,
   getTutorProfile,
@@ -82,14 +81,13 @@ export default function TutorProfileUpdateForm() {
   }, []);
 
   const form = useForm({
-    // ✅ this enables re-init when `initial` changes
     defaultValues: initial satisfies FormValues,
 
     onSubmit: async ({ value }) => {
       const toastId = toast.loading("Updating profile...");
 
       try {
-        // basic checks
+        
         if (!value.categoryId) {
           toast.error("Category is required", { id: toastId });
           return;
@@ -144,10 +142,10 @@ export default function TutorProfileUpdateForm() {
     },
   });
 
-  // ✅ Important: when initial values change after fetch, reset form
+ 
   React.useEffect(() => {
     form.reset();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [loading]);
 
   if (loading) {

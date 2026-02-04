@@ -14,12 +14,8 @@ const StatusButton = ({
   userStatus: string;
 }) => {
   const router = useRouter();
-
-  // ✅ local status (so UI updates instantly)
   const [status, setStatus] = useState<string>(userStatus);
   const [loading, setLoading] = useState(false);
-
-  // ✅ keep local state synced if server refresh changes props
   useEffect(() => {
     setStatus(userStatus);
   }, [userStatus]);
@@ -30,7 +26,7 @@ const StatusButton = ({
     const prevStatus = status;
     const nextStatus: string = status === "UNBAN" ? "BAN" : "UNBAN";
 
-    // ✅ instant UI update
+   
     setStatus(nextStatus);
     setLoading(true);
 
@@ -45,10 +41,10 @@ const StatusButton = ({
 
       toast.success("User status updated", { id: toastId });
 
-      // ✅ optional: refresh server table (badge/status in row will update)
+     
       router.refresh();
     } catch (e: any) {
-      // ❌ rollback if failed
+     
       setStatus(prevStatus);
       toast.error(e?.message || "Failed to update status", { id: toastId });
     } finally {

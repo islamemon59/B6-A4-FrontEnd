@@ -54,10 +54,10 @@ interface Navbar1Props {
 
 const Navbar = ({
   logo = {
-    url: "https://www.shadcnblocks.com",
-    src: "https://deifkwefumgah.cloudfront.net/shadcnblocks/block/logos/shadcnblockscom-icon.svg",
+    url: "/",
+    src: "/",
     alt: "logo",
-    title: "Shadcnblocks.com",
+    title: "SkillBridge 🎓",
   },
   menu = [
     { title: "Home", url: "/" },
@@ -91,7 +91,7 @@ const Navbar = ({
                 className="max-h-8 dark:invert"
                 alt={logo.alt}
               />
-              <span className="text-lg font-semibold tracking-tighter">
+              <span className="text-xl font-bold tracking-tighter">
                 {logo.title}
               </span>
             </Link>

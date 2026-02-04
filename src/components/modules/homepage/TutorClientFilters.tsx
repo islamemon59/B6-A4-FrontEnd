@@ -24,7 +24,6 @@ export default function TutorsClientFilters() {
       else sp.set(key, val);
     });
 
-    // ✅ reset page when filter changes
     sp.set("page", "1");
     router.push(`/tutor?${sp.toString()}`);
   };
@@ -44,14 +43,12 @@ export default function TutorsClientFilters() {
 
   const reset = () => router.push("/tutors");
 
-  // ✅ optional: auto-search debounce
   React.useEffect(() => {
     const t = setTimeout(() => {
       updateUrl({ q: q.trim() });
     }, 400);
 
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q]);
 
   return (
