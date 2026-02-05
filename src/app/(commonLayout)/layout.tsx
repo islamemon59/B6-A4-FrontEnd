@@ -9,7 +9,6 @@ const CommonLayout = ({children}: {children: React.ReactNode}) => {
             <div className='h-[calc(100vh-70px)]'>
                 {children}
             </div>
-            {/* <Footer/> */}
         </div>
     );
 };

@@ -21,8 +21,6 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
-import { getUser } from "@/actions/user.action";
-import { useEffect, useState } from "react";
 import LogoutButton from "../authentication/LogoutButton";
 import { UserProfile } from "../authentication/UserProfile";
 import { roles } from "@/Constant/roles";
@@ -87,10 +85,8 @@ const { user } = useAuth();
 
 const filteredMenu = menu.filter((item) => {
   if (item.url === "/dashboard") {
-    // not logged in → hide
     if (!user) return false;
 
-    // logged in but invalid role → hide
     if (
       ![roles.admin, roles.student, roles.tutor].includes(user.role)
     ) {

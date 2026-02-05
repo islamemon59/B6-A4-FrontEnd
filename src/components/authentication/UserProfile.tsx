@@ -14,7 +14,7 @@ export function UserProfile() {
 
   useEffect(() => {
     (async () => {
-      const res = await getUser(); // must return { success, data }
+      const res = await getUser();
       setUser(res?.data.user || null);
     })();
   }, []);
