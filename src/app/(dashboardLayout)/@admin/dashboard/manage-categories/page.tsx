@@ -13,7 +13,7 @@ import { FormValues } from "@/types/category.type";
 
 export default async function AdminCategoriesTable() {
   const res = await adminService.getAllCategory();
-  const categories = res.data;
+  const categories = res.data || [];
 
   return (
     <div className="space-y-4">

@@ -102,6 +102,7 @@ export default function CreateTutorProfileForm() {
         };
 
         const res = await createProfile(payload);
+        console.log(res);
 
         if (!res.success) {
           toast.error("Failed to create profile", {

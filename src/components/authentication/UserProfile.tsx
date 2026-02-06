@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 
 export function UserProfile() {
   const [user, setUser] = useState<any>(null);
-  console.log(user);
 
   useEffect(() => {
     (async () => {

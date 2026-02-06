@@ -33,7 +33,7 @@ export const adminService = {
 
   getAllCategory: async function () {
     const cookieStore = await cookies();
-    const res = await fetch(`${API_URL}/api/admin/categories`, {
+    const res = await fetch(`${API_URL}/api/categories`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

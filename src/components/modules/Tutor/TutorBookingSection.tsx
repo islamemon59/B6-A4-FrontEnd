@@ -49,21 +49,13 @@ function formatDateTime(iso: string) {
   });
 }
 
-export default function TutorBookingSection({
-  tutor,
-}: {
-  tutor: TutorProfile;
-}) {
+export default function TutorBookingSection({ tutor }: { tutor: TutorProfile }) {
   const [open, setOpen] = React.useState(false);
   const [selectedSlot, setSelectedSlot] = React.useState<Slot | null>(null);
-  const [subject, setSubject] = React.useState<string>(
-    tutor.subjects?.[0] || "",
-  );
+  const [subject, setSubject] = React.useState<string>(tutor.subjects?.[0] || "");
   const [loading, setLoading] = React.useState(false);
 
-  const [slots, setSlots] = React.useState<Slot[]>(
-    tutor.availabilitySlots || [],
-  );
+  const [slots, setSlots] = React.useState<Slot[]>(tutor.availabilitySlots || []);
 
   React.useEffect(() => {
     setSlots(tutor.availabilitySlots || []);
@@ -78,16 +70,14 @@ export default function TutorBookingSection({
     const tId = toast.loading("Booking your slot...");
 
     try {
-      const data = await createBooking({
+      await createBooking({
         tutorProfileId: tutor.id,
         availabilitySlotId: selectedSlot.id,
         subject,
       });
 
       setSlots((prev) =>
-        prev.map((s) =>
-          s.id === selectedSlot.id ? { ...s, isBooked: true } : s,
-        ),
+        prev.map((s) => (s.id === selectedSlot.id ? { ...s, isBooked: true } : s))
       );
 
       toast.success("Booking confirmed!", {
@@ -103,15 +93,11 @@ export default function TutorBookingSection({
       if (msg.includes("already booked") || msg.includes("slot")) {
         toast.warning("Slot not available", {
           id: tId,
-          description:
-            "Someone already booked this slot. Please pick another one.",
+          description: "Someone already booked this slot. Please pick another one.",
         });
 
-       
         setSlots((prev) =>
-          prev.map((s) =>
-            s.id === selectedSlot.id ? { ...s, isBooked: true } : s,
-          ),
+          prev.map((s) => (s.id === selectedSlot.id ? { ...s, isBooked: true } : s))
         );
 
         setOpen(false);
@@ -119,7 +105,6 @@ export default function TutorBookingSection({
         return;
       }
 
-  
       toast.error("Booking failed", {
         id: tId,
         description: e?.message || "Please try again.",
@@ -164,22 +149,31 @@ export default function TutorBookingSection({
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">Available slots</p>
 
-          {availableSlots.length === 0 ? (
+          {slots.length === 0 ? (
             <div className="rounded-xl border p-4 text-sm text-muted-foreground">
-              No available slots right now. Please check back later.
+              This tutor hasn’t added any availability yet.
+            </div>
+          ) : availableSlots.length === 0 ? (
+            <div className="rounded-xl border p-4 text-sm text-muted-foreground">
+              All slots are booked right now. Please check back later.
             </div>
           ) : (
             <div className="grid gap-3 sm:grid-cols-2">
               {availableSlots.map((slot) => (
                 <div key={slot.id} className="rounded-xl border p-3">
-                  <p className="text-sm font-medium">
-                    {formatDateTime(slot.startTime)}
-                  </p>
+                  <p className="text-sm font-medium">{formatDateTime(slot.startTime)}</p>
                   <p className="text-xs text-muted-foreground">
                     To: {formatDateTime(slot.endTime)}
                   </p>
 
-                  <Dialog open={open} onOpenChange={setOpen}>
+                  {/* ✅ One dialog (shared) – but keeping your structure */}
+                  <Dialog
+                    open={open}
+                    onOpenChange={(v) => {
+                      setOpen(v);
+                      if (!v) setSelectedSlot(null);
+                    }}
+                  >
                     <DialogTrigger asChild>
                       <Button
                         className="mt-3 w-full rounded-xl"
@@ -197,19 +191,17 @@ export default function TutorBookingSection({
 
                       <div className="space-y-2 text-sm">
                         <p>
-                          <span className="text-muted-foreground">
-                            Subject:
-                          </span>{" "}
+                          <span className="text-muted-foreground">Subject:</span>{" "}
                           <span className="font-medium">{subject}</span>
                         </p>
+
                         <p>
                           <span className="text-muted-foreground">Time:</span>{" "}
                           <span className="font-medium">
-                            {selectedSlot
-                              ? formatDateTime(selectedSlot.startTime)
-                              : "-"}
+                            {selectedSlot ? formatDateTime(selectedSlot.startTime) : "-"}
                           </span>
                         </p>
+
                         <p>
                           <span className="text-muted-foreground">Rate:</span>{" "}
                           <span className="font-medium">
@@ -227,6 +219,7 @@ export default function TutorBookingSection({
                         >
                           Cancel
                         </Button>
+
                         <Button
                           className="rounded-xl"
                           onClick={handleConfirmBooking}
