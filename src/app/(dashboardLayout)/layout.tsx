@@ -8,6 +8,7 @@ import {
 import { roles } from "@/Constant/roles";
 import { userService } from "@/services/user.service";
 import React from "react";
+import { nan } from "zod";
 
 const DashboardLayout = async ({
   admin,
@@ -19,7 +20,7 @@ const DashboardLayout = async ({
   tutor: React.ReactNode;
 }) => {
   const { data } = await userService.getSession();
-
+if(!data)return null;
   const userInfo = data.user;
   return (
     <SidebarProvider>

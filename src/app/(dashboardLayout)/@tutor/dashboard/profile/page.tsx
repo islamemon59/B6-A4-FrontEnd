@@ -14,6 +14,7 @@ import Link from "next/link";
 
 const TutorProfile = async () => {
   const session = await userService.getSession();
+  if(!session)return null;
   const user = session?.data?.user;
 
   if (!user) {

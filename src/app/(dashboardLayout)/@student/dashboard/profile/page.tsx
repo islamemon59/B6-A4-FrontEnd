@@ -8,6 +8,8 @@ import { Separator } from "@/components/ui/separator";
 
 export default async function ProfilePage() {
   const { data } = await userService.getSession();
+
+  if(!data)return null;
   const user = data?.user;
 
 
