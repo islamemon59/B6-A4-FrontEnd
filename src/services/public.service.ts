@@ -23,7 +23,7 @@ export const publicService = {
     const res = await fetch(`${API_URL}/api/public/featured-tutor`, {
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       cache: "no-store",
       credentials: "include",
@@ -37,7 +37,7 @@ export const publicService = {
     const res = await fetch(`${API_URL}/api/public/tutor/${id}`, {
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       cache: "no-store",
     });

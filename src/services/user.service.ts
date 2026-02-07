@@ -1,4 +1,3 @@
-
 import { cookies } from "next/headers";
 
 const AUTH_URL = process.env.AUTH_URL;
@@ -6,6 +5,10 @@ const AUTH_URL = process.env.AUTH_URL;
 export const userService = {
   getSession: async function () {
     try {
+      if (!AUTH_URL) {
+        return { data: null, error: { message: "AUTH_URL is missing" } };
+      }
+
       const cookieStore = await cookies();
 
       const res = await fetch(`${AUTH_URL}/get-session`, {
@@ -14,13 +17,21 @@ export const userService = {
         },
         cache: "no-store",
       });
-      const session = await res.json();
-      if (session === null) {
-        return { data: null, error: { message: "Session is not found" } };
+
+      if (!res.ok) {
+        return {
+          data: null,
+          error: { message: `Session fetch failed: ${res.status}` },
+        };
       }
-      return { data: session, error: null };
-    } catch (error) {
-      return { data: null, error: error };
+
+      const session = await res.json();
+      return { data: session ?? null, error: null };
+    } catch (error: any) {
+      return {
+        data: null,
+        error: { message: error?.message ?? "Unknown error" },
+      };
     }
   },
 };

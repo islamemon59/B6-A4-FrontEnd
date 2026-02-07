@@ -10,7 +10,7 @@ export const tutorServices = {
     const res = await fetch(`${API_URL}/api/categories`, {
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       cache: "no-store",
     });
@@ -24,7 +24,7 @@ export const tutorServices = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       credentials: "include",
       body: JSON.stringify(payload),
@@ -38,7 +38,7 @@ export const tutorServices = {
     const res = await fetch(`${API_URL}/api/tutor/profile`, {
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       cache: "no-store",
     });
@@ -52,7 +52,7 @@ export const tutorServices = {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       body: JSON.stringify(payload),
     });
@@ -65,7 +65,7 @@ export const tutorServices = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       body: JSON.stringify(payload),
     });
@@ -78,7 +78,7 @@ export const tutorServices = {
     const res = await fetch(`${API_URL}/api/tutor/sessions`, {
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       cache: "no-store",
     });
@@ -97,7 +97,7 @@ export const tutorServices = {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Cookie: cookieStore.toString(),
+          cookie: cookieStore.toString(),
         },
         cache: "no-store",
       },
@@ -116,7 +116,7 @@ export const tutorServices = {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Cookie: cookieStore.toString(),
+          cookie: cookieStore.toString(),
         },
         cache: "no-store",
         body: JSON.stringify({ reason }),
@@ -133,7 +133,7 @@ export const tutorServices = {
     const res = await fetch(`${API_URL}/api/tutor/reviews`, {
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       cache: "no-store",
     });

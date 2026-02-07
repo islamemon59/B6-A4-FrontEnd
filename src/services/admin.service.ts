@@ -10,7 +10,7 @@ export const adminService = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       cache: "no-store",
     });
@@ -23,7 +23,7 @@ export const adminService = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       cache: "no-store",
     });
@@ -37,7 +37,7 @@ export const adminService = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       cache: "no-store",
     });
@@ -51,7 +51,7 @@ export const adminService = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       cache: "no-store",
     });
@@ -65,7 +65,7 @@ export const adminService = {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       credentials: "include",
       body: JSON.stringify({ status: payload }),
@@ -80,7 +80,7 @@ export const adminService = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       body: JSON.stringify(payload),
     });
@@ -94,7 +94,7 @@ export const adminService = {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       body: JSON.stringify(payload),
     });
@@ -108,7 +108,7 @@ export const adminService = {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
     });
 

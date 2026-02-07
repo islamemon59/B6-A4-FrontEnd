@@ -10,7 +10,7 @@ export const studentServices = {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       credentials: "include",
       body: JSON.stringify(payload),
@@ -25,7 +25,7 @@ export const studentServices = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
     });
 
@@ -42,7 +42,7 @@ export const studentServices = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       credentials: "include",
       body: JSON.stringify(payload),
@@ -62,7 +62,7 @@ export const studentServices = {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
     });
 
@@ -75,7 +75,7 @@ export const studentServices = {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       credentials: "include",
       body: JSON.stringify({ reason }),
@@ -94,7 +94,7 @@ export const studentServices = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString(),
+        cookie: cookieStore.toString(),
       },
       credentials: "include",
       cache: "no-store",
