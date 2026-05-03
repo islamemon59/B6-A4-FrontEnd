@@ -68,7 +68,7 @@ const DashboardLayout = async ({
           </div>
           <UserMenu />
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
+        <div className="flex min-h-[calc(100vh-72px)] flex-1 flex-col gap-4 p-4">
           {userInfo.role === roles.admin
             ? admin
             : userInfo.role === roles.student
