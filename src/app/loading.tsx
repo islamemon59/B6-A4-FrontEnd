@@ -5,7 +5,10 @@ const Loading = () => {
     <div className="flex min-h-screen flex-col">
       <div className="mx-auto grid min-h-[calc(100vh-73px)] w-full max-w-7xl gap-6 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-3 lg:px-8">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="rounded-[1.5rem] border p-4 space-y-4">
+          <div
+            key={i}
+            className="space-y-4 rounded-[1.5rem] border border-border/70 bg-card/80 p-4 shadow-sm"
+          >
             <div className="flex items-center gap-4">
               <Skeleton className="h-12 w-12 rounded-full" />
               <div className="space-y-2 flex-1">
