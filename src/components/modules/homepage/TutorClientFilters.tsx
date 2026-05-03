@@ -25,6 +25,7 @@ export default function TutorsClientFilters({
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const hasMountedRef = React.useRef(false);
 
   const [q, setQ] = React.useState(searchParams.get("q") || "");
   const [categoryId, setCategoryId] = React.useState(
@@ -58,6 +59,11 @@ export default function TutorsClientFilters({
   );
 
   React.useEffect(() => {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
+    }
+
     const timer = window.setTimeout(() => {
       updateUrl({ q: q.trim() });
     }, 450);
