@@ -38,9 +38,7 @@ const loginSchema = z.object({
 export function LoginForm() {
   const router = useRouter();
   const { refreshUser } = useAuth();
-  const [socialLoading, setSocialLoading] = React.useState<"" | "google" | "facebook">(
-    "",
-  );
+  const [socialLoading, setSocialLoading] = React.useState(false);
   const callbackURL =
     typeof window !== "undefined"
       ? `${window.location.origin}/dashboard`
@@ -78,22 +76,18 @@ export function LoginForm() {
     },
   });
 
-  async function handleSocialLogin(provider: "google" | "facebook") {
-    setSocialLoading(provider);
+  async function handleSocialLogin() {
+    setSocialLoading(true);
 
     try {
       await authClient.signIn.social({
-        provider,
+        provider: "google",
         callbackURL,
       });
     } catch {
-      toast.error(
-        provider === "facebook"
-          ? "Facebook login is not configured in this environment yet."
-          : "Social login failed. Please try again.",
-      );
+      toast.error("Google login failed. Please try again.");
     } finally {
-      setSocialLoading("");
+      setSocialLoading(false);
     }
   }
 
@@ -176,24 +170,15 @@ export function LoginForm() {
           Use demo login
         </Button>
 
-        <div className="grid w-full gap-3 sm:grid-cols-2">
+        <div className="w-full">
           <Button
             type="button"
             variant="outline"
-            className="rounded-full"
-            onClick={() => handleSocialLogin("google")}
-            disabled={socialLoading !== ""}
+            className="w-full rounded-full"
+            onClick={handleSocialLogin}
+            disabled={socialLoading}
           >
-            {socialLoading === "google" ? "Connecting..." : "Google"}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            className="rounded-full"
-            onClick={() => handleSocialLogin("facebook")}
-            disabled={socialLoading !== ""}
-          >
-            {socialLoading === "facebook" ? "Connecting..." : "Facebook"}
+            {socialLoading ? "Connecting..." : "Continue with Google"}
           </Button>
         </div>
 

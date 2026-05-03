@@ -33,9 +33,7 @@ const formSchema = z.object({
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const router = useRouter();
-  const [socialLoading, setSocialLoading] = React.useState<"" | "google" | "facebook">(
-    "",
-  );
+  const [socialLoading, setSocialLoading] = React.useState(false);
   const callbackURL =
     typeof window !== "undefined"
       ? `${window.location.origin}/dashboard`
@@ -72,22 +70,18 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     },
   });
 
-  async function handleSocialSignup(provider: "google" | "facebook") {
-    setSocialLoading(provider);
+  async function handleSocialSignup() {
+    setSocialLoading(true);
 
     try {
       await authClient.signIn.social({
-        provider,
+        provider: "google",
         callbackURL,
       });
     } catch {
-      toast.error(
-        provider === "facebook"
-          ? "Facebook signup is not configured in this environment yet."
-          : "Social signup failed. Please try again.",
-      );
+      toast.error("Google signup failed. Please try again.");
     } finally {
-      setSocialLoading("");
+      setSocialLoading(false);
     }
   }
 
@@ -208,24 +202,15 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           {form.state.isSubmitting ? "Creating account..." : "Create account"}
         </Button>
 
-        <div className="grid w-full gap-3 sm:grid-cols-2">
+        <div className="w-full">
           <Button
-            onClick={() => handleSocialSignup("google")}
+            onClick={handleSocialSignup}
             variant="outline"
             type="button"
-            className="rounded-full"
-            disabled={socialLoading !== ""}
+            className="w-full rounded-full"
+            disabled={socialLoading}
           >
-            {socialLoading === "google" ? "Connecting..." : "Google"}
-          </Button>
-          <Button
-            onClick={() => handleSocialSignup("facebook")}
-            variant="outline"
-            type="button"
-            className="rounded-full"
-            disabled={socialLoading !== ""}
-          >
-            {socialLoading === "facebook" ? "Connecting..." : "Facebook"}
+            {socialLoading ? "Connecting..." : "Continue with Google"}
           </Button>
         </div>
 
