@@ -8,13 +8,19 @@ export type TutorProfile = {
   meetingMode: "ONLINE" | "IN_PERSON" | "BOTH";
   hourlyRate: number;
   currency: string;
-  ratingAvg?: number; // optional if not in schema yet
+  ratingAvg: number;
   ratingCount: number;
   isFeatured: boolean;
   profileStatus: "DRAFT" | "PUBLISHED";
   createdAt: string;
   updatedAt: string;
-  category?: { id: string; name: string };
+  category?: { id: string; name: string; description?: string };
+  user?: {
+    id: string;
+    name: string;
+    email?: string;
+    image?: string | null;
+  };
 };
 
 export type TutorsQuery = {

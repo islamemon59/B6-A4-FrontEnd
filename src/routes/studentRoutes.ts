@@ -5,6 +5,10 @@ export const studentRoutes: Routes[] = [
     title: "Student Dashboard",
     items: [
       {
+        title: "Overview",
+        url: "/dashboard",
+      },
+      {
         title: "Create Bookings",
         url: "/dashboard/create-bookings",
       },

@@ -1,16 +1,17 @@
 "use client";
 
-import { Menu } from "lucide-react";
-
-import { cn } from "@/lib/utils";
-
-import { Accordion } from "@/components/ui/accordion";
+import Link from "next/link";
+import { ChevronDown, Menu } from "lucide-react";
+import { useAuth } from "@/Provider/AuthProvider";
 import { Button } from "@/components/ui/button";
+import { ModeToggle } from "./ModeToggle";
+import { UserMenu } from "@/components/authentication/UserMenu";
 import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetContent,
@@ -18,226 +19,136 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import Image from "next/image";
-import Link from "next/link";
-import { ModeToggle } from "./ModeToggle";
-import LogoutButton from "../authentication/LogoutButton";
-import { UserProfile } from "../authentication/UserProfile";
-import { roles } from "@/Constant/roles";
-import { useAuth } from "@/Provider/AuthProvider";
 
-interface MenuItem {
-  title: string;
-  url: string;
-  description?: string;
-  icon?: React.ReactNode;
-  items?: MenuItem[];
-}
+const primaryLinks = [
+  { href: "/", label: "Home" },
+  { href: "/tutor", label: "Find Tutors" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
+];
 
-interface Navbar1Props {
-  className?: string;
-  logo?: {
-    url: string;
-    src: string;
-    alt: string;
-    title: string;
-    className?: string;
-  };
-  menu?: MenuItem[];
-  auth?: {
-    login: {
-      title: string;
-      url: string;
-    };
-    signup: {
-      title: string;
-      url: string;
-    };
-  };
-}
+const resourceLinks = [
+  { href: "/help", label: "Help Center" },
+  { href: "/privacy", label: "Privacy & Terms" },
+];
 
-const Navbar = ({
-  logo = {
-    url: "/",
-    src: "/",
-    alt: "logo",
-    title: "SkillBridge 🎓",
-  },
-  menu = [
-    { title: "Home", url: "/" },
-    {
-      title: "Tutor",
-      url: "/tutor",
-    },
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-    },
-  ],
-  auth = {
-    login: { title: "Login", url: "/login" },
-    signup: { title: "Sign up", url: "/register" },
-  },
-  className,
-}: Navbar1Props) => {
-const { user } = useAuth();
+export function Navbar() {
+  const { user } = useAuth();
 
-
-const filteredMenu = menu.filter((item) => {
-  if (item.url === "/dashboard") {
-    if (!user) return false;
-
-    if (
-      ![roles.admin, roles.student, roles.tutor].includes(user.role)
-    ) {
-      return false;
-    }
-  }
-
-  return true;
-});
-
+  const allLinks = user
+    ? [...primaryLinks, { href: "/dashboard", label: "Dashboard" }]
+    : primaryLinks;
 
   return (
-    <section className={cn("py-4", className)}>
-      <div className="container mx-auto">
-        {/* Desktop Menu */}
-        <nav className="hidden items-center justify-between lg:flex">
-          <div className="flex items-center gap-6">
-            {/* Logo */}
-            <Link href={logo.url} className="flex items-center gap-2">
-              <Image
-                width={0}
-                height={0}
-                src={logo.src}
-                className="max-h-8 dark:invert"
-                alt={logo.alt}
-              />
-              <span className="text-xl font-bold tracking-tighter">
-                {logo.title}
-              </span>
+    <header className="sticky top-0 z-50 w-full border-b border-border/60 bg-background/85 backdrop-blur-xl">
+      <div className="mx-auto flex min-h-18 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="flex items-center gap-3">
+          <div className="flex size-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm">
+            <span className="font-semibold">SB</span>
+          </div>
+          <div>
+            <p className="font-semibold tracking-tight">SkillBridge</p>
+            <p className="text-xs text-muted-foreground">
+              Learn from trusted tutors
+            </p>
+          </div>
+        </Link>
+
+        <nav className="hidden items-center gap-2 lg:flex">
+          {allLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+            >
+              {link.label}
             </Link>
-            <div className="flex items-center">
-              <NavigationMenu>
-                <NavigationMenuList>
-                  {filteredMenu.map((item) => renderMenuItem(item))}
-                </NavigationMenuList>
-              </NavigationMenu>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <ModeToggle />
-            {user ? (
-              <div className="flex justify-center items-center gap-2">
-                <UserProfile />
-                <LogoutButton />
-              </div>
-            ) : (
-              <>
-                {" "}
-                <Button asChild variant="outline" size="sm">
-                  <Link href={auth.login.url}>{auth.login.title}</Link>
-                </Button>
-                <Button asChild size="sm">
-                  <Link href={auth.signup.url}>{auth.signup.title}</Link>
-                </Button>
-              </>
-            )}
-          </div>
+          ))}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="rounded-full px-4 text-sm">
+                Resources
+                <ChevronDown className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 rounded-2xl">
+              {resourceLinks.map((link) => (
+                <DropdownMenuItem key={link.href} asChild>
+                  <Link href={link.href}>{link.label}</Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
 
-        {/* Mobile Menu */}
-        <div className="block lg:hidden">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <Link href={logo.url} className="flex items-center gap-2">
-              <Image
-                width={0}
-                height={0}
-                src={logo.src}
-                className="max-h-8 dark:invert"
-                alt={logo.alt}
-              />
-            </Link>
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu className="size-4" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent className="overflow-y-auto">
-                <SheetHeader>
-                  <SheetTitle>
-                    <Link href={logo.url} className="flex items-center gap-2">
-                      <Image
-                        width={0}
-                        height={0}
-                        src={logo.src}
-                        className="max-h-8 dark:invert"
-                        alt={logo.alt}
-                      />
-                    </Link>
-                  </SheetTitle>
-                </SheetHeader>
-                <div className="flex flex-col gap-6 p-4">
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="flex w-full flex-col gap-4"
-                  >
-                    {menu.map((item) => renderMobileMenuItem(item))}
-                  </Accordion>
+        <div className="hidden items-center gap-3 lg:flex">
+          <ModeToggle />
+          {user ? (
+            <UserMenu />
+          ) : (
+            <>
+              <Button asChild variant="outline" className="rounded-full">
+                <Link href="/login">Login</Link>
+              </Button>
+              <Button asChild className="rounded-full">
+                <Link href="/register">Get Started</Link>
+              </Button>
+            </>
+          )}
+        </div>
 
-                  <div className="flex flex-col gap-3">
-                    <ModeToggle />
-                    {user ? (
-                      <div className="flex justify-center items-center gap-2">
-                        <UserProfile />
-                        <LogoutButton />
-                      </div>
-                    ) : (
-                      <>
-                        {" "}
-                        <Button asChild variant="outline" size="sm">
-                          <Link href={auth.login.url}>{auth.login.title}</Link>
-                        </Button>
-                        <Button asChild size="sm">
-                          <Link href={auth.signup.url}>
-                            {auth.signup.title}
-                          </Link>
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
+        <div className="flex items-center gap-2 lg:hidden">
+          <ModeToggle />
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="rounded-full">
+                <Menu className="size-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="w-[320px]">
+              <SheetHeader>
+                <SheetTitle>SkillBridge</SheetTitle>
+              </SheetHeader>
+              <div className="mt-8 flex flex-col gap-3">
+                {allLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="rounded-2xl border border-border/70 px-4 py-3 text-sm font-medium"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                {resourceLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="rounded-2xl border border-border/70 px-4 py-3 text-sm font-medium"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+
+              <div className="mt-8 flex flex-col gap-3">
+                {user ? (
+                  <UserMenu />
+                ) : (
+                  <>
+                    <Button asChild variant="outline" className="rounded-full">
+                      <Link href="/login">Login</Link>
+                    </Button>
+                    <Button asChild className="rounded-full">
+                      <Link href="/register">Get Started</Link>
+                    </Button>
+                  </>
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
-    </section>
+    </header>
   );
-};
-
-const renderMenuItem = (item: MenuItem) => {
-  return (
-    <NavigationMenuItem key={item.title}>
-      <Link
-        href={item.url}
-        className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
-      >
-        {item.title}
-      </Link>
-    </NavigationMenuItem>
-  );
-};
-
-const renderMobileMenuItem = (item: MenuItem) => {
-  return (
-    <Link key={item.title} href={item.url} className="text-md font-semibold">
-      {item.title}
-    </Link>
-  );
-};
-
-export { Navbar };
+}

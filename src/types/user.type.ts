@@ -5,4 +5,5 @@ export interface User {
   role: string;
   status: string;
   createdAt: string;
+  image?: string | null;
 }

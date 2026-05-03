@@ -1,248 +1,314 @@
-import { publicService } from "@/services/public.service";
+import Image from "next/image";
+import Link from "next/link";
+import { CalendarDays, Clock3, Mail, Star, Wallet } from "lucide-react";
+import TutorsGrid from "@/components/modules/homepage/TutorsGrid";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { getTutorGalleryImages } from "@/lib/site-content";
+import { publicService } from "@/services/public.service";
 
 type PageProps = {
   params: Promise<{ id: string }>;
 };
 
-function formatDay(iso: string) {
-  try {
-    return new Date(iso).toLocaleDateString(undefined, {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  } catch {
-    return iso;
-  }
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }
 
 function formatTimeRange(startIso: string, endIso: string) {
-  try {
-    const start = new Date(startIso).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    const end = new Date(endIso).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    return `${start} - ${end}`;
-  } catch {
-    return `${startIso} - ${endIso}`;
-  }
-}
-
-function formatDate(iso: string) {
-  try {
-    return new Date(iso).toLocaleString();
-  } catch {
-    return iso;
-  }
+  const start = new Date(startIso).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const end = new Date(endIso).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  return `${start} - ${end}`;
 }
 
 export default async function SingleTutorPage({ params }: PageProps) {
   const { id } = await params;
-
   const res = await publicService.getSingleTutor(id);
   const tutor = res?.data;
 
   if (!tutor) {
     return (
-      <div className="max-w-4xl mx-auto p-6">
-        <p className="text-sm text-muted-foreground">Tutor not found.</p>
+      <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
+        <Card className="rounded-[2rem] border-dashed border-border/70">
+          <CardContent className="p-10 text-center">
+            <h1 className="text-2xl font-semibold">Tutor not found</h1>
+            <p className="mt-3 text-muted-foreground">
+              This profile may have been removed or is no longer public.
+            </p>
+            <Button asChild className="mt-6 rounded-full">
+              <Link href="/tutor">Back to tutors</Link>
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
-  const rating =
-    typeof tutor.ratingAvg === "number" ? tutor.ratingAvg.toFixed(1) : "N/A";
-
-  const subjects: string[] = Array.isArray(tutor.subjects)
-    ? tutor.subjects
-    : [];
+  const gallery = getTutorGalleryImages(tutor.category?.name, tutor.user?.image);
+  const availableSlots = (tutor.availabilitySlots || []).filter(
+    (slot: any) => slot.isBooked !== true,
+  );
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-6">
-      <Card className="overflow-hidden">
-        <CardHeader className="space-y-3">
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-2">
-              <CardTitle className="text-2xl">{tutor.headline}</CardTitle>
-
-              <div className="flex flex-wrap gap-2">
-                {tutor.isFeatured ? <Badge>⭐ Featured</Badge> : null}
-
-                {tutor.category?.name ? (
-                  <Badge variant="outline">{tutor.category.name}</Badge>
-                ) : tutor.categoryId ? (
-                  <Badge variant="outline">Category: {tutor.categoryId}</Badge>
-                ) : null}
-
-                <Badge variant="secondary">{tutor.meetingMode}</Badge>
-
-                <Badge variant="outline">{tutor.profileStatus}</Badge>
-              </div>
+    <div className="mx-auto max-w-7xl space-y-10 px-4 py-10 sm:px-6 lg:px-8">
+      <section className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center gap-2">
+              {tutor.isFeatured ? (
+                <Badge className="rounded-full bg-accent text-accent-foreground">
+                  Featured tutor
+                </Badge>
+              ) : null}
+              {tutor.category?.name ? (
+                <Badge variant="outline" className="rounded-full">
+                  {tutor.category.name}
+                </Badge>
+              ) : null}
+              <Badge variant="secondary" className="rounded-full">
+                {tutor.meetingMode.replace("_", " ")}
+              </Badge>
             </div>
 
-            <div className="text-right">
-              <p className="text-lg font-semibold">
-                {tutor.hourlyRate} {tutor.currency}
-                <span className="text-sm font-normal text-muted-foreground">
-                  {" "}
-                  / hour
-                </span>
+            <div>
+              <p className="text-sm font-medium text-primary">
+                {tutor.user?.name || "SkillBridge Tutor"}
               </p>
-              <p className="text-sm text-muted-foreground">
-                ⭐ {rating} ({tutor.ratingCount} reviews)
+              <h1 className="mt-2 text-4xl font-semibold tracking-tight">
+                {tutor.headline}
+              </h1>
+              <p className="mt-4 max-w-3xl text-base leading-7 text-muted-foreground">
+                {tutor.about}
               </p>
             </div>
           </div>
-        </CardHeader>
 
-        <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <h2 className="text-base font-semibold">About</h2>
-            <p className="text-sm text-muted-foreground whitespace-pre-line">
-              {tutor.about}
-            </p>
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Card className="rounded-[1.5rem] border-border/70">
+              <CardContent className="p-5">
+                <div className="flex items-center gap-2 text-primary">
+                  <Wallet className="size-4" />
+                  <span className="text-sm font-medium">Rate</span>
+                </div>
+                <p className="mt-3 text-2xl font-semibold">
+                  {tutor.currency} {tutor.hourlyRate}
+                </p>
+                <p className="text-sm text-muted-foreground">Per hour session</p>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-[1.5rem] border-border/70">
+              <CardContent className="p-5">
+                <div className="flex items-center gap-2 text-accent-foreground">
+                  <Star className="size-4 text-accent" />
+                  <span className="text-sm font-medium">Rating</span>
+                </div>
+                <p className="mt-3 text-2xl font-semibold">
+                  {tutor.ratingAvg?.toFixed(1) || "0.0"}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  From {tutor.ratingCount} reviews
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-[1.5rem] border-border/70">
+              <CardContent className="p-5">
+                <div className="flex items-center gap-2 text-primary">
+                  <CalendarDays className="size-4" />
+                  <span className="text-sm font-medium">Availability</span>
+                </div>
+                <p className="mt-3 text-2xl font-semibold">{availableSlots.length}</p>
+                <p className="text-sm text-muted-foreground">Open future slots</p>
+              </CardContent>
+            </Card>
           </div>
 
-          <Separator />
+          <div className="flex flex-wrap gap-3">
+            <Button asChild size="lg" className="rounded-full">
+              <Link href="/login">Login to book</Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="rounded-full">
+              <Link href="/tutor">Explore more tutors</Link>
+            </Button>
+          </div>
+        </div>
 
-          <div className="space-y-2">
-            <h2 className="text-base font-semibold">Subjects</h2>
-            {subjects.length ? (
-              <div className="flex flex-wrap gap-2">
-                {subjects.map((s) => (
-                  <Badge key={s} variant="outline">
-                    {s}
+        <div className="grid gap-4 sm:grid-cols-2">
+          {gallery.map((src, index) => (
+            <div
+              key={`${src}-${index}`}
+              className={`relative overflow-hidden rounded-[2rem] ${
+                index === 0 ? "h-80 sm:col-span-2" : "h-48"
+              }`}
+            >
+              <Image
+                src={src}
+                alt={`${tutor.headline} gallery ${index + 1}`}
+                fill
+                className="object-cover"
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="grid gap-8 lg:grid-cols-[1fr_0.92fr]">
+        <Card className="rounded-[2rem] border-border/70">
+          <CardContent className="space-y-6 p-6">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                Overview
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold">What this tutor helps with</h2>
+              <p className="mt-3 text-muted-foreground">{tutor.about}</p>
+            </div>
+
+            <Separator />
+
+            <div>
+              <h3 className="text-lg font-semibold">Subjects</h3>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {(tutor.subjects || []).map((subject: string) => (
+                  <Badge key={subject} variant="outline" className="rounded-full">
+                    {subject}
                   </Badge>
                 ))}
               </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                No subjects added yet.
-              </p>
-            )}
-          </div>
+            </div>
+          </CardContent>
+        </Card>
 
-          <Separator />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="rounded-md border p-4 space-y-2">
-              <h3 className="font-semibold">Tutor Info</h3>
-              <p className="text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">
-                  Tutor Profile ID:
-                </span>{" "}
-                {tutor.id}
+        <Card className="rounded-[2rem] border-border/70">
+          <CardContent className="space-y-6 p-6">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                Key information
               </p>
-              <p className="text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">User ID:</span>{" "}
-                {tutor.userId}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">
-                  Category ID:
-                </span>{" "}
-                {tutor.categoryId}
-              </p>
+              <h2 className="mt-2 text-2xl font-semibold">Session specifications</h2>
             </div>
 
-            <div className="rounded-md border p-4 space-y-2">
-              <h3 className="font-semibold">Timeline</h3>
-              <p className="text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">Created At:</span>{" "}
-                {formatDate(tutor.createdAt)}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                <span className="font-medium text-foreground">Updated At:</span>{" "}
-                {formatDate(tutor.updatedAt)}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent>
-          {/* Availability Slots */}
-          <div className="space-y-2">
-            <h2 className="text-base font-semibold">Availability</h2>
-
-            {tutor.availabilitySlots?.length ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {tutor.availabilitySlots
-                  // optional: only show not booked slots if your API includes isBooked
-                  .filter((s: any) => s?.isBooked !== true)
-                  .map((slot: any) => (
-                    <div
-                      key={slot.id}
-                      className="rounded-md border p-3 flex items-start justify-between gap-3"
-                    >
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium">
-                          {formatDay(slot.startTime)}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {formatTimeRange(slot.startTime, slot.endTime)}
-                        </p>
-                      </div>
-
-                      <Badge variant="outline">Available</Badge>
-                    </div>
-                  ))}
+            <div className="grid gap-4">
+              <div className="rounded-[1.5rem] bg-secondary/60 p-4">
+                <p className="text-sm text-muted-foreground">Teaching format</p>
+                <p className="mt-1 font-semibold">{tutor.meetingMode.replace("_", " ")}</p>
               </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                No availability slots available right now. Please check back
-                later.
-              </p>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Separator className="my-6" />
-
-      <div className="space-y-3">
-        <h2 className="text-base font-semibold">Reviews</h2>
-
-        {tutor.reviews?.length ? (
-          <div className="space-y-3">
-            {tutor.reviews.map((review: any) => (
-              <div key={review.id} className="rounded-md border p-4 space-y-2">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">
-                      ⭐ {review.rating} / 5
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {formatDate(review.createdAt)}
-                    </p>
-                  </div>
-
-                  {review.student?.name ? (
-                    <Badge variant="outline">{review.student.name}</Badge>
-                  ) : null}
-                </div>
-
-                <p className="text-sm text-muted-foreground whitespace-pre-line">
-                  {review.comment || "No comment provided."}
+              <div className="rounded-[1.5rem] bg-secondary/60 p-4">
+                <p className="text-sm text-muted-foreground">Contact</p>
+                <p className="mt-1 flex items-center gap-2 font-semibold">
+                  <Mail className="size-4 text-primary" />
+                  {tutor.user?.email}
                 </p>
               </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            No reviews yet. Be the first to review after booking a session.
+              <div className="rounded-[1.5rem] bg-secondary/60 p-4">
+                <p className="text-sm text-muted-foreground">Profile published</p>
+                <p className="mt-1 font-semibold">{formatDate(tutor.createdAt)}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+        <Card className="rounded-[2rem] border-border/70">
+          <CardContent className="space-y-5 p-6">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                Availability
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold">Upcoming session windows</h2>
+            </div>
+
+            <div className="space-y-3">
+              {availableSlots.length > 0 ? (
+                availableSlots.slice(0, 6).map((slot: any) => (
+                  <div
+                    key={slot.id}
+                    className="rounded-[1.5rem] border border-border/70 p-4"
+                  >
+                    <p className="font-semibold">{formatDate(slot.startTime)}</p>
+                    <p className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+                      <Clock3 className="size-4" />
+                      {formatTimeRange(slot.startTime, slot.endTime)}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-[1.5rem] border border-dashed border-border/70 p-6 text-sm text-muted-foreground">
+                  No future slots are listed right now. Check back soon or contact the tutor.
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-[2rem] border-border/70">
+          <CardContent className="space-y-5 p-6">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                Reviews
+              </p>
+              <h2 className="mt-2 text-2xl font-semibold">What students are saying</h2>
+            </div>
+
+            <div className="space-y-4">
+              {(tutor.reviews || []).length > 0 ? (
+                tutor.reviews.map((review: any) => (
+                  <div
+                    key={review.id}
+                    className="rounded-[1.5rem] border border-border/70 p-4"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="font-semibold">
+                          {review.student?.name || "SkillBridge student"}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {formatDate(review.createdAt)}
+                        </p>
+                      </div>
+                      <Badge variant="secondary" className="rounded-full">
+                        {review.rating}/5
+                      </Badge>
+                    </div>
+                    <p className="mt-3 text-sm leading-6 text-muted-foreground">
+                      {review.comment || "A rating was shared without a written review."}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-[1.5rem] border border-dashed border-border/70 p-6 text-sm text-muted-foreground">
+                  No public reviews yet. Completed bookings will start showing up here.
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="space-y-5">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+            Related tutors
           </p>
-        )}
-      </div>
+          <h2 className="mt-2 text-3xl font-semibold">
+            Similar experts learners explore next
+          </h2>
+        </div>
+        <TutorsGrid tutors={tutor.relatedTutors || []} />
+      </section>
     </div>
   );
 }

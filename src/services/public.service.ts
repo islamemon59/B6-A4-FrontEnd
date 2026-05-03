@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { TutorsResponse } from "@/types/tutor.type";
 
 const API_URL = process.env.API_URL;
 
@@ -14,31 +14,42 @@ export const publicService = {
       });
     }
 
-    const res = await fetch(url);
-    return await res.json();
+    const res = await fetch(url, {
+      cache: "no-store",
+    });
+    return (await res.json()) as TutorsResponse;
   },
 
   getFeaturedTutor: async function () {
-    const cookieStore = await cookies();
     const res = await fetch(`${API_URL}/api/public/featured-tutor`, {
-      headers: {
-        "Content-Type": "application/json",
-        cookie: cookieStore.toString(),
-      },
+      headers: { "Content-Type": "application/json" },
       cache: "no-store",
-      credentials: "include",
     });
 
     return await res.json();
   },
 
   getSingleTutor: async function (id: string) {
-    const cookieStore = await cookies();
     const res = await fetch(`${API_URL}/api/public/tutor/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        cookie: cookieStore.toString(),
-      },
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+    });
+
+    return await res.json();
+  },
+
+  getPublicCategories: async function () {
+    const res = await fetch(`${API_URL}/api/public/categories`, {
+      headers: { "Content-Type": "application/json" },
+      cache: "no-store",
+    });
+
+    return await res.json();
+  },
+
+  getHomeMetrics: async function () {
+    const res = await fetch(`${API_URL}/api/public/home-metrics`, {
+      headers: { "Content-Type": "application/json" },
       cache: "no-store",
     });
 
