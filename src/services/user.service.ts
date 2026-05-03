@@ -2,16 +2,27 @@ import { cookies } from "next/headers";
 
 const AUTH_URL = process.env.AUTH_URL;
 
+function getSessionEndpoint() {
+  if (!AUTH_URL) return null;
+
+  const normalized = AUTH_URL.replace(/\/$/, "");
+  return normalized.endsWith("/api/auth")
+    ? `${normalized}/get-session`
+    : `${normalized}/api/auth/get-session`;
+}
+
 export const userService = {
   getSession: async function () {
     try {
-      if (!AUTH_URL) {
+      const sessionEndpoint = getSessionEndpoint();
+
+      if (!sessionEndpoint) {
         return { data: null, error: { message: "AUTH_URL is missing" } };
       }
 
       const cookieStore = await cookies();
 
-      const res = await fetch(`${AUTH_URL}/get-session`, {
+      const res = await fetch(sessionEndpoint, {
         headers: {
           cookie: cookieStore.toString(),
         },

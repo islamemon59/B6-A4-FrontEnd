@@ -8,7 +8,10 @@ import {
 import { UserMenu } from "@/components/authentication/UserMenu";
 import { roles } from "@/Constant/roles";
 import { userService } from "@/services/user.service";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 const DashboardLayout = async ({
   admin,
@@ -19,8 +22,31 @@ const DashboardLayout = async ({
   student: React.ReactNode;
   tutor: React.ReactNode;
 }) => {
-  const { data } = await userService.getSession();
-  if (!data) return null;
+  const { data, error } = await userService.getSession();
+
+  if (!data?.user) {
+    if (!error) {
+      redirect("/login");
+    }
+
+    return (
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <div className="max-w-md rounded-[1.75rem] border border-border/70 bg-card/90 p-8 text-center shadow-sm">
+          <h1 className="text-2xl font-semibold">Dashboard unavailable</h1>
+          <p className="mt-3 text-sm text-muted-foreground">
+            We could not load your session for the dashboard right now.
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground">
+            {error?.message || "Please sign in again and try once more."}
+          </p>
+          <Button asChild className="mt-6 rounded-full">
+            <Link href="/login">Go to login</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   const userInfo = data.user;
   return (
     <SidebarProvider>
