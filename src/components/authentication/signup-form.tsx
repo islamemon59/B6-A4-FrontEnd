@@ -36,6 +36,10 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [socialLoading, setSocialLoading] = React.useState<"" | "google" | "facebook">(
     "",
   );
+  const callbackURL =
+    typeof window !== "undefined"
+      ? `${window.location.origin}/dashboard`
+      : "/dashboard";
 
   const form = useForm({
     defaultValues: {
@@ -74,7 +78,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL: "/dashboard",
+        callbackURL,
       });
     } catch {
       toast.error(
