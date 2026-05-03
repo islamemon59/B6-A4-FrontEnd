@@ -41,8 +41,8 @@ export function LoginForm() {
   const [socialLoading, setSocialLoading] = React.useState(false);
   const callbackURL =
     typeof window !== "undefined"
-      ? `${window.location.origin}/dashboard`
-      : "/dashboard";
+      ? `${window.location.origin}/`
+      : "/";
 
   const form = useForm({
     defaultValues: {
@@ -64,8 +64,9 @@ export function LoginForm() {
         }
 
         if (data) {
+          form.reset();
           await refreshUser();
-          router.push("/dashboard");
+          router.push("/");
           router.refresh();
         }
 
