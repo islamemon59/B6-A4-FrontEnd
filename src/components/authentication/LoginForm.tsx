@@ -3,11 +3,15 @@
 import Link from "next/link";
 import * as React from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "@tanstack/react-form";
 import * as z from "zod";
 import { useAuth } from "@/Provider/AuthProvider";
 import { authClient } from "@/lib/auth-client";
+import {
+  getOAuthErrorMessage,
+  GoogleIcon,
+} from "@/components/authentication/google-auth";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -37,12 +41,34 @@ const loginSchema = z.object({
 
 export function LoginForm() {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { refreshUser } = useAuth();
   const [socialLoading, setSocialLoading] = React.useState(false);
+  const hasHandledOAuthError = React.useRef(false);
   const callbackURL =
     typeof window !== "undefined"
       ? `${window.location.origin}/`
       : "/";
+
+  React.useEffect(() => {
+    if (hasHandledOAuthError.current) {
+      return;
+    }
+
+    const message = getOAuthErrorMessage(
+      searchParams.get("error"),
+      searchParams.get("error_description"),
+    );
+
+    if (!message) {
+      return;
+    }
+
+    hasHandledOAuthError.current = true;
+    toast.error(message);
+    router.replace(pathname);
+  }, [pathname, router, searchParams]);
 
   const form = useForm({
     defaultValues: {
@@ -84,6 +110,10 @@ export function LoginForm() {
       await authClient.signIn.social({
         provider: "google",
         callbackURL,
+        errorCallbackURL:
+          typeof window !== "undefined"
+            ? `${window.location.origin}/login`
+            : "/login",
       });
     } catch {
       toast.error("Google login failed. Please try again.");
@@ -179,6 +209,7 @@ export function LoginForm() {
             onClick={handleSocialLogin}
             disabled={socialLoading}
           >
+            <GoogleIcon className="size-4" />
             {socialLoading ? "Connecting..." : "Continue with Google"}
           </Button>
         </div>
