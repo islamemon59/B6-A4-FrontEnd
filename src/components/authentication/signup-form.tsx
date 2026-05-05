@@ -8,6 +8,7 @@ import { useForm } from "@tanstack/react-form";
 import * as z from "zod";
 import { authClient } from "@/lib/auth-client";
 import {
+  getAuthErrorMessage,
   getOAuthErrorMessage,
   GoogleIcon,
 } from "@/components/authentication/google-auth";
@@ -82,7 +83,13 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         const { data, error } = await authClient.signUp.email(value);
 
         if (error) {
-          toast.error(error.message, { id: toastId });
+          toast.error(
+            getAuthErrorMessage(
+              error,
+              "Signup failed. Please check your information and try again.",
+            ),
+            { id: toastId },
+          );
           return;
         }
 

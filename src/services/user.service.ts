@@ -1,6 +1,9 @@
 import { cookies } from "next/headers";
 
-const AUTH_URL = process.env.AUTH_URL;
+const AUTH_URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.AUTH_URL
+    : process.env.LOCAL_AUTH_URL || "http://localhost:5000/api/auth";
 
 function getSessionEndpoint() {
   if (!AUTH_URL) return null;

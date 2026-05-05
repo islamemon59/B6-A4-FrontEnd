@@ -9,6 +9,7 @@ import * as z from "zod";
 import { useAuth } from "@/Provider/AuthProvider";
 import { authClient } from "@/lib/auth-client";
 import {
+  getAuthErrorMessage,
   getOAuthErrorMessage,
   GoogleIcon,
 } from "@/components/authentication/google-auth";
@@ -85,7 +86,10 @@ export function LoginForm() {
         const { data, error } = await authClient.signIn.email(value);
 
         if (error) {
-          toast.error(error.message, { id: toastId });
+          toast.error(
+            getAuthErrorMessage(error, "Login failed. Please try again."),
+            { id: toastId },
+          );
           return;
         }
 

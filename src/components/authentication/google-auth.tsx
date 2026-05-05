@@ -46,3 +46,34 @@ export function getOAuthErrorMessage(
     .map((word) => word[0]?.toUpperCase() + word.slice(1))
     .join(" ");
 }
+
+export function getAuthErrorMessage(
+  error: unknown,
+  fallbackMessage: string,
+) {
+  if (typeof error === "string" && error.trim()) {
+    return error;
+  }
+
+  if (error && typeof error === "object") {
+    const maybeMessage = "message" in error ? error.message : null;
+
+    if (typeof maybeMessage === "string" && maybeMessage.trim()) {
+      return maybeMessage;
+    }
+
+    const maybeError = "error" in error ? error.error : null;
+
+    if (
+      maybeError &&
+      typeof maybeError === "object" &&
+      "message" in maybeError &&
+      typeof maybeError.message === "string" &&
+      maybeError.message.trim()
+    ) {
+      return maybeError.message;
+    }
+  }
+
+  return fallbackMessage;
+}
